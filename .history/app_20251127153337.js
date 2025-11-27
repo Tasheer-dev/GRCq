@@ -854,7 +854,7 @@ function ShowFullReport() {
 
       <!-- Repeating footer with page number -->
       <div class="print-footer">
-        <div>Prepared by: ${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
+        <div>Prepared by: ${appearance.orgName || "Your Organization"}</div>
         <div class="page-number"></div>
       </div>
 
@@ -866,11 +866,11 @@ function ShowFullReport() {
         <div class="cover-page">
           <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
           <div class="cover-title">Compliance Full Report</div>
-          <div class="cover-subtitle">${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
+          <div class="cover-subtitle">${appearance.orgName || "Your Organization"}</div>
 
           <div class="cover-meta">
             <p>التاريخ: ${today}</p>
-            <p>إعداد: ${appearance.preparedBy || "إدارة البنية المؤسسية"}</p>
+            <p>إعداد: ${appearance.preparedBy || "قسم الامتY"}</p>
           </div>
         </div>
 

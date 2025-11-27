@@ -635,17 +635,10 @@ document.getElementById("btn-print-attachments").onclick = printAttachments;
 
 // ✅ Updated Function: Show Report + “Save as PDF” Button
 function ShowFullReport() {
-  const today = new Date().toLocaleDateString('ar-SA'); // or your preferred format
-  const watermarkText = (appearance && appearance.watermarkText) || "CONFIDENTIAL";
-
   let html = `
     <html dir="rtl">
     <head>
       <title>Full Compliance Report</title>
-
-      <!-- jsPDF + html2canvas CDN -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
       <style>
         body {
@@ -653,10 +646,9 @@ function ShowFullReport() {
           padding: 30px;
           line-height: 1.6;
           color: #1f2430;
-          background: #f5f7fb;
         }
 
-        /* PDF page setup */
+        /* Wide full-color PDF layout */
         @page {
           size: A4 landscape;
           margin: 20mm;
@@ -669,234 +661,78 @@ function ShowFullReport() {
 
         h1 {
           text-align: center;
-          margin-bottom: 10px;
-          font-size: 30px;
+          margin-bottom: 30px;
+          font-size: 28px;
         }
-
         h2 {
           background: #1f4f8f;
           color: white;
-          padding: 10px 16px;
+          padding: 10px;
           border-radius: 6px;
           margin-top: 30px;
-          font-size: 18px;
           -webkit-print-color-adjust: exact !important;
         }
-
         table {
           width: 100%;
           border-collapse: collapse;
           margin-top: 15px;
           margin-bottom: 20px;
-          background: white;
         }
-
         th, td {
           border: 1px solid #ccc;
-          padding: 8px 10px;
-          font-size: 13px;
-          vertical-align: top;
-          page-break-inside: avoid;
-          break-inside: avoid;
+          padding: 10px;
+          font-size: 14px;
         }
-
         th {
           background: #e8eff8;
-          font-weight: 600;
           -webkit-print-color-adjust: exact !important;
         }
-
-        tr {
-          page-break-inside: avoid;
-          break-inside: avoid;
-        }
-
         .logo {
           width: 160px;
           display: block;
-          margin: 0 auto 10px;
+          margin: 0 auto 20px;
         }
 
-        .cover-page {
-          background: white;
-          border-radius: 12px;
-          padding: 40px;
-          margin-bottom: 40px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.05);
-          text-align: center;
-        }
-
-        .cover-title {
-          font-size: 32px;
-          margin-bottom: 10px;
-        }
-
-        .cover-subtitle {
-          font-size: 20px;
-          margin-bottom: 20px;
-          color: #555;
-        }
-
-        .cover-meta {
-          margin-top: 30px;
-          font-size: 16px;
-        }
-
-        .content-card {
-          background: white;
-          border-radius: 12px;
-          padding: 20px 24px;
-          margin-bottom: 24px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.03);
-        }
-
-
-/* SUPER NARROW Footer */
-.print-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 22px;                     /* ↓ much smaller */
-  padding: 2px 20px;                /* ↓ minimal padding */
-  background: #f0f4fb;
-  border-top: 1px solid #d4dde9;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;                   /* ↓ smaller */
-  z-index: 1000;
-}
-
-
-
-        /* Page number using CSS counters (works in modern browsers) */
-        .page-number::after {
-          content: "Page " counter(page) " of " counter(pages);
-        }
-
-        /* Fix content so it never overlaps header/footer */
-@media print {
-  body {
-    margin-top: 10px !important;     /* should be slightly bigger than header height */
-    margin-bottom: 5px !important;  /* should be slightly bigger than footer height */
-  }
-}
-
-
+        /* Hide print button when exporting PDF */
         @media print {
-          body {
-            margin-top: 1px;   /* space for header */
-            margin-bottom: 1px; /* space for footer */
-            background: white;
-          }
-
-          #toolbar {
-            display: none !important;
-          }
-
-          .content-card,
-          .cover-page {
-            box-shadow: none;
+          #savePdfBtn {
+            display: none;
           }
         }
 
-        /* On screen toolbar */
-        #toolbar {
-          margin-top: 20px;
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-        }
-
-        .toolbar-btn {
-          padding: 10px 20px;
+        /* Button styling */
+        #savePdfBtn {
+          display: block;
+          margin: 40px auto;
+          padding: 12px 28px;
           background: #1f4f8f;
           color: white;
           border: none;
+          font-size: 16px;
           border-radius: 8px;
-          font-size: 14px;
           cursor: pointer;
-        }
-
-        .toolbar-btn.secondary {
-          background: #4a6faf;
-        }
-
-        .toolbar-btn:hover {
-          opacity: 0.9;
-        }
-
-        /* Watermark */
-        .watermark {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-25deg);
-          font-size: 64px;
-          color: rgba(180, 180, 180, 0.2);
-          z-index: 0;
-          pointer-events: none;
-          white-space: nowrap;
-        }
-
-        /* Wrap all report content (for html2canvas) */
-        #reportContainer {
-          position: relative;
-          z-index: 1;
         }
       </style>
     </head>
 
     <body>
-      <!-- Repeating header -->
-
-
-      <!-- Repeating footer with page number -->
-      <div class="print-footer">
-        <div>Prepared by: ${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
-        <div class="page-number"></div>
-      </div>
-
-      <!-- Watermark -->
-      <div class="watermark">${watermarkText}</div>
-
-      <div id="reportContainer">
-        <!-- COVER PAGE -->
-        <div class="cover-page">
-          <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
-          <div class="cover-title">Compliance Full Report</div>
-          <div class="cover-subtitle">${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
-
-          <div class="cover-meta">
-            <p>التاريخ: ${today}</p>
-            <p>إعداد: ${appearance.preparedBy || "إدارة البنية المؤسسية"}</p>
-          </div>
-        </div>
-
-        <!-- Force cover page to end here in print -->
-        <div style="page-break-after: always;"></div>
-
-        <!-- MAIN CONTENT -->
-        <div class="content-card">
-          <h1>Compliance Full Report</h1>
-        </div>
+      <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
+      <h1>Compliance Full Report</h1>
   `;
 
   sections.forEach(sec => {
     if (sec === "أسئلة وصفية إضافية") return;
 
+    html += `<h2>${sec}</h2>`;
     html += `
-      <div class="content-card">
-        <h2>${sec}</h2>
-        <table>
-          <tr>
-            <th>Question #</th>
-            <th>Question</th>
-            <th>Answer</th>
-            <th>Reason</th>
-            <th>Attachment</th>
-          </tr>
+      <table>
+        <tr>
+          <th>Question #</th>
+          <th>Question</th>
+          <th>Answer</th>
+          <th>Reason</th>
+          <th>Attachment</th>
+        </tr>
     `;
 
     questions
@@ -923,70 +759,12 @@ function ShowFullReport() {
         `;
       });
 
-    html += `
-        </table>
-      </div>
-    `;
+    html += `</table>`;
   });
 
-  // Toolbar + scripts
+  // Add PDF button
   html += `
-      <div id="toolbar">
-        <button id="savePdfBtn" class="toolbar-btn">💾 حفظ كملف PDF (طباعة المتصفح)</button>
-        <button id="generatePdfBtn" class="toolbar-btn secondary">📄 إنشاء PDF مباشر (jsPDF)</button>
-      </div>
-
-      <script>
-        // Wait until DOM is ready in the new window
-        window.onload = function () {
-          var saveBtn = document.getElementById('savePdfBtn');
-          var genBtn = document.getElementById('generatePdfBtn');
-
-          if (saveBtn) {
-            saveBtn.addEventListener('click', function () {
-              window.print();
-            });
-          }
-
-          if (genBtn) {
-            genBtn.addEventListener('click', function () {
-              var element = document.getElementById('reportContainer');
-              if (!element) return;
-
-              // Use html2canvas + jsPDF
-              html2canvas(element, {
-                scale: 2,
-                useCORS: true
-              }).then(function (canvas) {
-                var imgData = canvas.toDataURL('image/png');
-                var pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-
-                var pageWidth = pdf.internal.pageSize.getWidth();
-                var pageHeight = pdf.internal.pageSize.getHeight();
-
-                var imgWidth = pageWidth;
-                var imgHeight = canvas.height * imgWidth / canvas.width;
-
-                var heightLeft = imgHeight;
-                var position = 0;
-
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft > 0) {
-                  position = heightLeft - imgHeight;
-                  pdf.addPage();
-                  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                  heightLeft -= pageHeight;
-                }
-
-                pdf.save('Compliance_Report.pdf');
-              });
-            });
-          }
-        };
-      </script>
-
+      <button id="savePdfBtn" onclick="window.print()">💾 Save as PDF</button>
     </body>
     </html>
   `;
@@ -995,6 +773,7 @@ function ShowFullReport() {
   win.document.write(html);
   win.document.close();
 }
+
 
 
 document.getElementById("btn-Show-full").onclick = ShowFullReport;
@@ -1411,10 +1190,7 @@ function printFullReport() {
   }
 
   html += `
-        <div class="export-wrapper">
-        <button id="savePdfBtn" onclick="window.print()">💾 حفظ التقرير كملف PDF</button>
-      </div>
-
+  
     </body>
     </html>
   `;

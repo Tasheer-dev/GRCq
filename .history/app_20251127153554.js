@@ -866,7 +866,7 @@ function ShowFullReport() {
         <div class="cover-page">
           <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
           <div class="cover-title">Compliance Full Report</div>
-          <div class="cover-subtitle">${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
+          <div class="cover-subtitle">${appearance.orgName || "Your Organization"}</div>
 
           <div class="cover-meta">
             <p>التاريخ: ${today}</p>

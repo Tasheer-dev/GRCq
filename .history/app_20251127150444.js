@@ -630,273 +630,74 @@ function printAttachments() {
 
 document.getElementById("btn-print-attachments").onclick = printAttachments;
 
+// 🟩 STEP 2 — Add this FULL REPORT function 
 
 
 
 // ✅ Updated Function: Show Report + “Save as PDF” Button
 function ShowFullReport() {
-  const today = new Date().toLocaleDateString('ar-SA'); // or your preferred format
-  const watermarkText = (appearance && appearance.watermarkText) || "CONFIDENTIAL";
-
   let html = `
     <html dir="rtl">
     <head>
       <title>Full Compliance Report</title>
-
-      <!-- jsPDF + html2canvas CDN -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
       <style>
         body {
           font-family: Cairo, sans-serif;
           padding: 30px;
           line-height: 1.6;
           color: #1f2430;
-          background: #f5f7fb;
         }
-
-        /* PDF page setup */
-        @page {
-          size: A4 landscape;
-          margin: 20mm;
-        }
-
-        body {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-
         h1 {
           text-align: center;
-          margin-bottom: 10px;
-          font-size: 30px;
+          margin-bottom: 30px;
+          font-size: 26px;
         }
-
         h2 {
           background: #1f4f8f;
           color: white;
-          padding: 10px 16px;
+          padding: 10px;
           border-radius: 6px;
           margin-top: 30px;
-          font-size: 18px;
-          -webkit-print-color-adjust: exact !important;
         }
-
         table {
           width: 100%;
           border-collapse: collapse;
           margin-top: 15px;
           margin-bottom: 20px;
-          background: white;
         }
-
         th, td {
           border: 1px solid #ccc;
-          padding: 8px 10px;
-          font-size: 13px;
-          vertical-align: top;
-          page-break-inside: avoid;
-          break-inside: avoid;
+          padding: 10px;
+          font-size: 14px;
         }
-
         th {
           background: #e8eff8;
-          font-weight: 600;
-          -webkit-print-color-adjust: exact !important;
         }
-
-        tr {
-          page-break-inside: avoid;
-          break-inside: avoid;
-        }
-
         .logo {
           width: 160px;
           display: block;
-          margin: 0 auto 10px;
-        }
-
-        .cover-page {
-          background: white;
-          border-radius: 12px;
-          padding: 40px;
-          margin-bottom: 40px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.05);
-          text-align: center;
-        }
-
-        .cover-title {
-          font-size: 32px;
-          margin-bottom: 10px;
-        }
-
-        .cover-subtitle {
-          font-size: 20px;
-          margin-bottom: 20px;
-          color: #555;
-        }
-
-        .cover-meta {
-          margin-top: 30px;
-          font-size: 16px;
-        }
-
-        .content-card {
-          background: white;
-          border-radius: 12px;
-          padding: 20px 24px;
-          margin-bottom: 24px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.03);
-        }
-
-
-/* SUPER NARROW Footer */
-.print-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 22px;                     /* ↓ much smaller */
-  padding: 2px 20px;                /* ↓ minimal padding */
-  background: #f0f4fb;
-  border-top: 1px solid #d4dde9;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;                   /* ↓ smaller */
-  z-index: 1000;
-}
-
-
-
-        /* Page number using CSS counters (works in modern browsers) */
-        .page-number::after {
-          content: "Page " counter(page) " of " counter(pages);
-        }
-
-        /* Fix content so it never overlaps header/footer */
-@media print {
-  body {
-    margin-top: 10px !important;     /* should be slightly bigger than header height */
-    margin-bottom: 5px !important;  /* should be slightly bigger than footer height */
-  }
-}
-
-
-        @media print {
-          body {
-            margin-top: 1px;   /* space for header */
-            margin-bottom: 1px; /* space for footer */
-            background: white;
-          }
-
-          #toolbar {
-            display: none !important;
-          }
-
-          .content-card,
-          .cover-page {
-            box-shadow: none;
-          }
-        }
-
-        /* On screen toolbar */
-        #toolbar {
-          margin-top: 20px;
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-        }
-
-        .toolbar-btn {
-          padding: 10px 20px;
-          background: #1f4f8f;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-size: 14px;
-          cursor: pointer;
-        }
-
-        .toolbar-btn.secondary {
-          background: #4a6faf;
-        }
-
-        .toolbar-btn:hover {
-          opacity: 0.9;
-        }
-
-        /* Watermark */
-        .watermark {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-25deg);
-          font-size: 64px;
-          color: rgba(180, 180, 180, 0.2);
-          z-index: 0;
-          pointer-events: none;
-          white-space: nowrap;
-        }
-
-        /* Wrap all report content (for html2canvas) */
-        #reportContainer {
-          position: relative;
-          z-index: 1;
+          margin: 0 auto 20px;
         }
       </style>
     </head>
-
     <body>
-      <!-- Repeating header -->
-
-
-      <!-- Repeating footer with page number -->
-      <div class="print-footer">
-        <div>Prepared by: ${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
-        <div class="page-number"></div>
-      </div>
-
-      <!-- Watermark -->
-      <div class="watermark">${watermarkText}</div>
-
-      <div id="reportContainer">
-        <!-- COVER PAGE -->
-        <div class="cover-page">
-          <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
-          <div class="cover-title">Compliance Full Report</div>
-          <div class="cover-subtitle">${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
-
-          <div class="cover-meta">
-            <p>التاريخ: ${today}</p>
-            <p>إعداد: ${appearance.preparedBy || "إدارة البنية المؤسسية"}</p>
-          </div>
-        </div>
-
-        <!-- Force cover page to end here in print -->
-        <div style="page-break-after: always;"></div>
-
-        <!-- MAIN CONTENT -->
-        <div class="content-card">
-          <h1>Compliance Full Report</h1>
-        </div>
+      <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
+      <h1>Compliance Full Report</h1>
   `;
 
   sections.forEach(sec => {
     if (sec === "أسئلة وصفية إضافية") return;
 
+    html += `<h2>${sec}</h2>`;
     html += `
-      <div class="content-card">
-        <h2>${sec}</h2>
-        <table>
-          <tr>
-            <th>Question #</th>
-            <th>Question</th>
-            <th>Answer</th>
-            <th>Reason</th>
-            <th>Attachment</th>
-          </tr>
+      <table>
+        <tr>
+          <th>Question #</th>
+          <th>Question</th>
+          <th>Answer</th>
+          <th>Reason</th>
+          <th>Attachment</th>
+        </tr>
     `;
 
     questions
@@ -923,94 +724,30 @@ function ShowFullReport() {
         `;
       });
 
-    html += `
-        </table>
-      </div>
-    `;
+    html += `</table>`;
   });
 
-  // Toolbar + scripts
   html += `
-      <div id="toolbar">
-        <button id="savePdfBtn" class="toolbar-btn">💾 حفظ كملف PDF (طباعة المتصفح)</button>
-        <button id="generatePdfBtn" class="toolbar-btn secondary">📄 إنشاء PDF مباشر (jsPDF)</button>
-      </div>
-
-      <script>
-        // Wait until DOM is ready in the new window
-        window.onload = function () {
-          var saveBtn = document.getElementById('savePdfBtn');
-          var genBtn = document.getElementById('generatePdfBtn');
-
-          if (saveBtn) {
-            saveBtn.addEventListener('click', function () {
-              window.print();
-            });
-          }
-
-          if (genBtn) {
-            genBtn.addEventListener('click', function () {
-              var element = document.getElementById('reportContainer');
-              if (!element) return;
-
-              // Use html2canvas + jsPDF
-              html2canvas(element, {
-                scale: 2,
-                useCORS: true
-              }).then(function (canvas) {
-                var imgData = canvas.toDataURL('image/png');
-                var pdf = new jspdf.jsPDF('l', 'pt', 'a4');
-
-                var pageWidth = pdf.internal.pageSize.getWidth();
-                var pageHeight = pdf.internal.pageSize.getHeight();
-
-                var imgWidth = pageWidth;
-                var imgHeight = canvas.height * imgWidth / canvas.width;
-
-                var heightLeft = imgHeight;
-                var position = 0;
-
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft > 0) {
-                  position = heightLeft - imgHeight;
-                  pdf.addPage();
-                  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                  heightLeft -= pageHeight;
-                }
-
-                pdf.save('Compliance_Report.pdf');
-              });
-            });
-          }
-        };
-      </script>
-
     </body>
     </html>
   `;
 
-  const win = window.open("", "_blank");
-  win.document.write(html);
-  win.document.close();
+  const printWindow = window.open("", "_blank");
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.print();
 }
-
-
 document.getElementById("btn-Show-full").onclick = ShowFullReport;
 
 
-// 🟩 STEP 2 — Add this FULL REPORT function 
 
 function printFullReport() {
   const today = new Date().toLocaleDateString('ar-SA');
 
-  // sections used in the report (exclude descriptive extra section)
-  const contentSections = sections.filter(sec => sec !== "أسئلة وصفية إضافية");
-
-  // ---- 1) Build per-section summary ----
+  // Compute per-section summary
   const sectionSummary = {};
-  contentSections.forEach(sec => {
+  sections.forEach(sec => {
+    if (sec === "أسئلة وصفية إضافية") return;
     const secQs = questions.filter(q => q.section === sec);
     let yes = 0, no = 0, na = 0;
     secQs.forEach(q => {
@@ -1028,42 +765,44 @@ function printFullReport() {
       na,
       yesPct: total ? Math.round((yes / total) * 100) : 0,
       noPct: total ? Math.round((no / total) * 100) : 0,
-      naPct: total ? Math.round((na / total) * 100) : 0
+      naPct: total ? Math.round((na / total) * 100) : 0,
     };
   });
 
-  // ---- 2) Compute logical page numbers for TOC ----
-  // Page 1 = Cover, Page 2 = TOC
-  // Page 3.. = sections, last page = attachments section
-  const tocPages = {};
-  let pageCounter = 3;
-  contentSections.forEach(sec => {
-    tocPages[sec] = pageCounter;
-    pageCounter++;
-  });
-  const attachmentsPage = pageCounter; // last page for attachments section
-
-  // ---- 3) Build HTML ----
   let html = `
     <html dir="rtl">
     <head>
       <meta charset="UTF-8" />
       <title>معاينة التقرير – قطاع التكنولوجيا والتحول الرقمي – تأشـيـر</title>
       <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
       <style>
         @page {
           size: A4 landscape;
-          margin: 15mm;
+          margin: 20mm;
         }
-
-        * { box-sizing: border-box; }
 
         body {
           font-family: 'Cairo', sans-serif;
-          padding: 32px;
+          padding: 40px;
           line-height: 1.7;
           color: #111827;
-          background: #f5f7fb;
+        }
+
+        .export-btn {
+          display: inline-block;
+          margin: 20px auto;
+          padding: 12px 24px;
+          background: #1f4f8f;
+          color: white;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 16px;
+          text-align: center;
+        }
+
+        .export-btn:hover {
+          background: #163a6c;
         }
 
         .watermark {
@@ -1075,283 +814,131 @@ function printFullReport() {
           color: rgba(15, 23, 42, 0.06);
           z-index: -1;
           pointer-events: none;
-          white-space: nowrap;
         }
 
         .page-break { page-break-before: always; }
 
-        .cover {
-          text-align: center;
-          margin-top: 80px;
-        }
+        .cover { text-align: center; margin-top: 80px; }
+        .cover-logo { width: 210px; margin-bottom: 24px; }
+        .cover-title { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+        .cover-date { margin-top: 24px; font-size: 14px; color: #6b7280; }
 
-        .cover-logo {
-          width: 220px;
-          margin-bottom: 24px;
-        }
-
-        .cover-title {
-          font-size: 28px;
-          font-weight: 800;
-          margin-bottom: 12px;
-          color: #0f172a;
-        }
-
-        .cover-sub {
-          font-size: 16px;
-          color: #4b5563;
-        }
-
-        .cover-date {
-          margin-top: 24px;
-          font-size: 14px;
-          color: #6b7280;
-        }
-
-        .export-wrapper {
-          text-align: center;
-          margin-top: 40px;
-        }
-
-        #savePdfBtn {
-          display: inline-block;
-          padding: 12px 26px;
-          background: #1f4f8f;
-          color: #ffffff;
-          border-radius: 999px;
-          font-size: 16px;
-          cursor: pointer;
-          border: none;
-        }
-
-        #savePdfBtn:hover {
-          background: #163a6c;
-        }
-
-        .toc-title {
-          font-size: 22px;
-          font-weight: 700;
-          margin-bottom: 14px;
-          color: #111827;
-        }
-
-        .toc-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-          font-size: 15px;
-        }
-
-        .toc-table th, .toc-table td {
-          border: 1px solid #d1d5db;
-          padding: 8px 10px;
-        }
-
-        .toc-table th {
-          background: #e5edf9;
-          font-weight: 700;
-        }
-
-        .toc-table td.page {
-          text-align: center;
-          width: 60px;
-        }
+        .toc-title { font-size: 22px; margin-bottom: 12px; font-weight: 700; }
+        .toc-list li { margin-bottom: 6px; font-size: 16px; }
 
         h2.section-title {
           background: #1f4f8f;
           color: white;
-          padding: 10px 14px;
-          border-radius: 8px;
-          margin-top: 32px;
-          font-size: 18px;
-        }
-
-        .section-summary {
-          margin-top: 10px;
-          margin-bottom: 10px;
-          font-size: 13px;
-          color: #374151;
+          padding: 12px;
+          border-radius: 6px;
+          margin-top: 40px;
         }
 
         .section-summary span {
-          display: inline-block;
           margin-inline-end: 8px;
-          padding: 3px 10px;
+          padding: 4px 10px;
           border-radius: 999px;
-          background: #f3f4f6;
+          font-size: 13px;
         }
 
-        .section-summary .yes {
-          background: rgba(22, 163, 74, 0.12);
-          color: #166534;
-        }
+        .yes { background: rgba(22,163,74,0.12); color:#166534; }
+        .no { background: rgba(220,38,38,0.12); color:#b91c1c; }
+        .na { background: rgba(234,179,8,0.12); color:#92400e; }
 
-        .section-summary .no {
-          background: rgba(220, 38, 38, 0.12);
-          color: #b91c1c;
-        }
-
-        .section-summary .na {
-          background: rgba(234, 179, 8, 0.12);
-          color: #92400e;
-        }
-
-        table.data {
+        table {
           width: 100%;
           border-collapse: collapse;
           margin-top: 10px;
-          margin-bottom: 18px;
-          font-size: 13px;
-          background: #ffffff;
+          margin-bottom: 20px;
+          font-size: 14px;
         }
-
-        table.data th, table.data td {
+        th, td {
           border: 1px solid #d1d5db;
           padding: 8px;
           vertical-align: top;
         }
-
-        table.data th {
+        th {
           background: #e7eef8;
           font-weight: 700;
         }
 
-        table.data tr:nth-child(even) td {
-          background: #f9fafb;
-        }
-
-        .answer-yes {
-          background: rgba(22, 163, 74, 0.08);
-          color: #166534;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        .answer-no {
-          background: rgba(220, 38, 38, 0.08);
-          color: #b91c1c;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        .answer-na {
-          background: rgba(234, 179, 8, 0.08);
-          color: #92400e;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        .attachments-note {
-          font-size: 13px;
-          color: #4b5563;
-          margin-top: 6px;
-        }
-
-        @media print {
-          #savePdfBtn {
-            display: none;
-          }
-          body {
-            background: white;
-          }
-        }
       </style>
     </head>
+
     <body>
+
       <div class="watermark">TASHEER (D&T)</div>
 
-      <!-- COVER PAGE (page 1) -->
+      <!-- COVER PAGE -->
       <div class="cover">
         <img src="${(typeof appearance !== 'undefined' && appearance.logoBase64) ? appearance.logoBase64 : 'logo.png'}" class="cover-logo" />
         <div class="cover-title">تقرير تقييم الالتزام – قطاع التكنولوجيا والتحول الرقمي – تأشـيـر</div>
-        <div class="cover-sub">تقرير التقييم الذاتي للحوكمة والتشغيل الرقمي</div>
+        <div>تقرير التقييم الذاتي للحوكمة والتشغيل الرقمي</div>
         <div class="cover-date">تاريخ التقرير: ${today}</div>
       </div>
 
+      <div style="text-align:center;">
+        <div class="export-btn" id="savePDFBtn">💾 حفظ بصيغة PDF</div>
+      </div>
 
-      <!-- TABLE OF CONTENTS (page 2) -->
       <div class="page-break"></div>
+
       <h2 class="toc-title">جدول المحتويات</h2>
-      <table class="toc-table">
-        <tr>
-          <th>م</th>
-          <th>القسم</th>
-          <th class="page">رقم الصفحة</th>
-        </tr>
+      <ul class="toc-list">
   `;
 
-  contentSections.forEach((sec, idx) => {
-    const page = tocPages[sec];
-    html += `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${sec}</td>
-        <td class="page">${page}</td>
-      </tr>
-    `;
+  // Add TOC
+  sections.forEach(sec => {
+    if (sec !== "أسئلة وصفية إضافية") {
+      html += `<li>${sec}</li>`;
+    }
   });
 
-  // Attachments row in TOC
-  html += `
-      <tr>
-        <td>${contentSections.length + 1}</td>
-        <td>المرفقات</td>
-        <td class="page">${attachmentsPage}</td>
-      </tr>
-      </table>
-  `;
+  html += `</ul>`;
 
-  // ---- 4) Sections with questions ----
-  contentSections.forEach(sec => {
+  // Add all sections
+  sections.forEach(sec => {
+    if (sec === "أسئلة وصفية إضافية") return;
+
     const sum = sectionSummary[sec];
     const secQs = questions.filter(q => q.section === sec);
 
     html += `<div class="page-break"></div>`;
     html += `<h2 class="section-title">${sec}</h2>`;
 
-    if (sum) {
-      html += `
-        <div class="section-summary">
-          <span class="yes">نعم: ${sum.yes} (${sum.yesPct}%)</span>
-          <span class="no">لا: ${sum.no} (${sum.noPct}%)</span>
-          <span class="na">لا أعلم: ${sum.na} (${sum.naPct}%)</span>
-          <span>إجمالي الأسئلة: ${sum.total}</span>
-        </div>
-      `;
-    }
+    html += `
+      <div class="section-summary">
+        <span class="yes">نعم: ${sum.yes}</span>
+        <span class="no">لا: ${sum.no}</span>
+        <span class="na">لا أعلم: ${sum.na}</span>
+        <span>إجمالي: ${sum.total}</span>
+      </div>
+    `;
 
     html += `
-      <table class="data">
+      <table>
         <tr>
           <th>رقم السؤال</th>
           <th>نص السؤال</th>
           <th>الإجابة</th>
-          <th>الأسباب / الملاحظات</th>
-          <th>رقم المرفق</th>
+          <th>الأسباب</th>
+          <th>المرفق</th>
         </tr>
     `;
 
     secQs.forEach(q => {
       const ans = state.answers[q.id] || {};
       let answerText = "";
-      let answerClass = "";
-      if (ans.answer === "yes") {
-        answerText = "نعم";
-        answerClass = "answer-yes";
-      } else if (ans.answer === "no") {
-        answerText = "لا";
-        answerClass = "answer-no";
-      } else if (ans.answer === "na") {
-        answerText = "لا أعلم";
-        answerClass = "answer-na";
-      }
+      if (ans.answer === "yes") answerText = "<span class='yes'>نعم</span>";
+      if (ans.answer === "no") answerText = "<span class='no'>لا</span>";
+      if (ans.answer === "na") answerText = "<span class='na'>لا أعلم</span>";
 
       html += `
         <tr>
           <td>${q.id}</td>
           <td>${q.text}</td>
-          <td class="${answerClass}">${answerText}</td>
-          <td>${ans.reason ? (ans.reason || "").replace(/\\n/g, "<br>") : ""}</td>
+          <td>${answerText}</td>
+          <td>${ans.reason || ""}</td>
           <td>${ans.attachment || ""}</td>
         </tr>
       `;
@@ -1360,71 +947,19 @@ function printFullReport() {
     html += `</table>`;
   });
 
-  // ---- 5) Attachments section at the end ----
-  const attachmentRows = questions
-    .map(q => {
-      const ans = state.answers[q.id];
-      if (ans && ans.attachment) {
-        return { q, ans };
-      }
-      return null;
-    })
-    .filter(x => x !== null);
-
-  html += `<div class="page-break"></div>`;
-  html += `<h2 class="section-title">المرفقات</h2>`;
-
-  if (attachmentRows.length === 0) {
-    html += `<p class="attachments-note">لا توجد مرفقات محددة في الإجابات.</p>`;
-  } else {
-    html += `
-      <p class="attachments-note">يتضمن الجدول التالي جميع الأسئلة التي تم تزويدها بأرقام مرفقات، ويمكن استخدامه كفهرس مرجعي لملفات الأدلة.</p>
-      <table class="data">
-        <tr>
-          <th>رقم السؤال</th>
-          <th>نص السؤال</th>
-          <th>الإجابة</th>
-          <th>رقم المرفق</th>
-          <th>الوصف / الملاحظات</th>
-        </tr>
-    `;
-
-    attachmentRows.forEach(row => {
-      const { q, ans } = row;
-      let answerText = "";
-      if (ans.answer === "yes") answerText = "نعم";
-      else if (ans.answer === "no") answerText = "لا";
-      else if (ans.answer === "na") answerText = "لا أعلم";
-
-      html += `
-        <tr>
-          <td>${q.id}</td>
-          <td>${q.text}</td>
-          <td>${answerText}</td>
-          <td>${ans.attachment}</td>
-          <td>${ans.reason ? (ans.reason || "").replace(/\\n/g, "<br>") : ""}</td>
-        </tr>
-      `;
-    });
-
-    html += `</table>`;
-  }
-
-  html += `
-        <div class="export-wrapper">
-        <button id="savePdfBtn" onclick="window.print()">💾 حفظ التقرير كملف PDF</button>
-      </div>
-
-    </body>
-    </html>
-  `;
-
-  // ---- 6) Open PREVIEW window (no auto-print) ----
+  // Show preview in new window
   const preview = window.open("", "_blank");
   preview.document.write(html);
-  preview.document.close();
-}
 
+  // Add PDF export button
+  preview.document.close();
+
+  preview.onload = function () {
+    preview.document.getElementById("savePDFBtn").onclick = () => {
+      preview.print(); // user can select "Save as PDF"
+    };
+  };
+}
 
 
 const btnPrintFull = document.getElementById("btn-print-full");

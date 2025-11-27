@@ -750,6 +750,22 @@ function ShowFullReport() {
           box-shadow: 0 0 10px rgba(0,0,0,0.03);
         }
 
+/* SUPER NARROW Header */
+.print-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;                      /* ↓ much smaller */
+  padding: 2px 20px;                 /* ↓ minimal padding */
+  background: #f0f4fb;
+  border-bottom: 1px solid #d4dde9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;                   /* ↓ smaller text */
+  z-index: 1000;
+}
 
 /* SUPER NARROW Footer */
 .print-footer {
@@ -767,6 +783,12 @@ function ShowFullReport() {
   font-size: 11px;                   /* ↓ smaller */
   z-index: 1000;
 }
+
+
+        .print-header-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
 
 
 
@@ -854,7 +876,7 @@ function ShowFullReport() {
 
       <!-- Repeating footer with page number -->
       <div class="print-footer">
-        <div>Prepared by: ${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
+        <div>Prepared by: ${appearance.orgName || "Your Organization"}</div>
         <div class="page-number"></div>
       </div>
 
@@ -866,11 +888,11 @@ function ShowFullReport() {
         <div class="cover-page">
           <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
           <div class="cover-title">Compliance Full Report</div>
-          <div class="cover-subtitle">${appearance.orgName || "Enterprise architecture (EA) Department"}</div>
+          <div class="cover-subtitle">${appearance.orgName || "Your Organization"}</div>
 
           <div class="cover-meta">
             <p>التاريخ: ${today}</p>
-            <p>إعداد: ${appearance.preparedBy || "إدارة البنية المؤسسية"}</p>
+            <p>إعداد: ${appearance.preparedBy || "قسم الامتثال"}</p>
           </div>
         </div>
 
