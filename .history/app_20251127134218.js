@@ -632,113 +632,6 @@ document.getElementById("btn-print-attachments").onclick = printAttachments;
 
 // 🟩 STEP 2 — Add this FULL REPORT function 
 
-function ShowFullReport() {
-  let html = `
-    <html dir="rtl">
-    <head>
-      <title>Full Compliance Report</title>
-      <style>
-        body {
-          font-family: Cairo, sans-serif;
-          padding: 30px;
-          line-height: 1.6;
-          color: #1f2430;
-        }
-        h1 {
-          text-align: center;
-          margin-bottom: 30px;
-          font-size: 26px;
-        }
-        h2 {
-          background: #1f4f8f;
-          color: white;
-          padding: 10px;
-          border-radius: 6px;
-          margin-top: 30px;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 15px;
-          margin-bottom: 20px;
-        }
-        th, td {
-          border: 1px solid #ccc;
-          padding: 10px;
-          font-size: 14px;
-        }
-        th {
-          background: #e8eff8;
-        }
-        .logo {
-          width: 160px;
-          display: block;
-          margin: 0 auto 20px;
-        }
-      </style>
-    </head>
-    <body>
-      <img src="${appearance.logoBase64 || 'logo.png'}" class="logo" />
-      <h1>Compliance Full Report</h1>
-  `;
-
-  sections.forEach(sec => {
-    if (sec === "أسئلة وصفية إضافية") return;
-
-    html += `<h2>${sec}</h2>`;
-    html += `
-      <table>
-        <tr>
-          <th>Question #</th>
-          <th>Question</th>
-          <th>Answer</th>
-          <th>Reason</th>
-          <th>Attachment</th>
-        </tr>
-    `;
-
-    questions
-      .filter(q => q.section === sec)
-      .forEach(q => {
-        const ans = state.answers[q.id] || {};
-        const answerText =
-          ans.answer === "yes"
-            ? "نعم"
-            : ans.answer === "no"
-            ? "لا"
-            : ans.answer === "na"
-            ? "لا أعلم"
-            : "";
-
-        html += `
-          <tr>
-            <td>${q.id}</td>
-            <td>${q.text}</td>
-            <td>${answerText}</td>
-            <td>${ans.reason || ""}</td>
-            <td>${ans.attachment || ""}</td>
-          </tr>
-        `;
-      });
-
-    html += `</table>`;
-  });
-
-  html += `
-    </body>
-    </html>
-  `;
-
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(html);
-  printWindow.document.close();
-  printWindow.print();
-}
-document.getElementById("btn-Show-full").onclick = ShowFullReport;
-
-
-
-
 function printFullReport() {
   const today = new Date().toLocaleDateString('ar-SA');
 
@@ -1043,6 +936,6 @@ function printFullReport() {
   printWindow.print();
 }
 
-
+document.getElementById("btn-print-full").onclick = printFullReport;
 const btnPrintFull = document.getElementById("btn-print-full");
 btnPrintFull.onclick = printFullReport;

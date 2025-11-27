@@ -734,7 +734,7 @@ function ShowFullReport() {
   printWindow.document.close();
   printWindow.print();
 }
-document.getElementById("btn-Show-full").onclick = ShowFullReport;
+document.getElementById("btn-print-full").onclick = ShowFullReport;
 
 
 
@@ -1042,7 +1042,3 @@ function printFullReport() {
   printWindow.focus();
   printWindow.print();
 }
-
-
-const btnPrintFull = document.getElementById("btn-print-full");
-btnPrintFull.onclick = printFullReport;

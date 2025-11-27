@@ -734,7 +734,7 @@ function ShowFullReport() {
   printWindow.document.close();
   printWindow.print();
 }
-document.getElementById("btn-Show-full").onclick = ShowFullReport;
+document.getElementById("btn-print-full").onclick = ShowFullReport;
 
 
 
