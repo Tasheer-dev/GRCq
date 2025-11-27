@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>سجل فحص الالتزام - إدارة التكنولوجيا والتحول الرقمي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="splash">
+  <div class="splash-content">
+    <img src="logo.png" alt="Tasheer Logo" class="splash-logo" />
+    <h1>تأشـيـر - Tasheer</h1>
+    <p>نظام التقييم الذاتي لقطا التكنولوجيا والتحول الرقمي</p>
+  </div>
+</div>
+
+<div class="app-shell">
+  <header>
+    <div class="title-group">
+      <h1>سجل فحص الالتزام - إدارة التكنولوجيا والتحول الرقمي</h1>
+      <span>التقييم الذاتي | GRC Self-Assessment – Local Storage Only</span>
+    </div>
+    <div class="header-right">
+      <img src="logo.png" alt="Tasheer Logo" class="header-logo" />
+      <div class="actions">
+        <button class="btn btn-primary" id="btn-export">تصدير JSON</button>
+        <label class="btn btn-secondary">
+          استيراد JSON
+          <input type="file" id="import-file" accept="application/json" style="display:none" />
+        </label>
+        <button class="btn btn-outline" id="btn-summary">الملخص</button>
+        <button class="btn btn-outline" id="btn-print">طباعة / PDF</button>
+        <button class="btn btn-secondary" id="btn-dark">🌙/☀️</button>
+        <button class="btn btn-danger" id="btn-clear">مسح كل البيانات</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-title">الأقسام</div>
+        <ul class="nav-list" id="section-nav"></ul>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div id="section-container"></div>
+    </section>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
