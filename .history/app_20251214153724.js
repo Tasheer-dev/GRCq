@@ -235,70 +235,43 @@ const containerEl = document.getElementById('section-container');
 
 let currentSection = sections[0];
 
-// function renderNav() {
-//   navEl.innerHTML = '';
-//   sections.forEach(sec => {
-
-    
-//     const li = document.createElement('li');
-//     li.className = 'nav-item' + (sec === currentSection ? ' active' : '');
-//     const total = questions.filter(q => q.section === sec).length;
-//     const answered = questions.filter(q => q.section === sec && state.answers[q.id] && state.answers[q.id].answer).length;
-//     li.innerHTML = `<span>${sec}</span><span>${answered}/${total || ''}</span>`;
-
-
-    
-//     li.onclick = () => {
-//       currentSection = sec;
-//       renderNav();
-//       renderSection();
-//     };
-//     navEl.appendChild(li);
-//   });
-// }
-
 function renderNav() {
   navEl.innerHTML = '';
-
   sections.forEach(sec => {
+
+    
     const li = document.createElement('li');
     li.className = 'nav-item' + (sec === currentSection ? ' active' : '');
+    const total = questions.filter(q => q.section === sec).length;
+    const answered = questions.filter(q => q.section === sec && state.answers[q.id] && state.answers[q.id].answer).length;
 
-    let total = 0;
-    let answered = 0;
+if (sec === "أسئلة وصفية إضافية") {
+  total = openQuestions.length;
 
-    // قسم الأسئلة الوصفية الإضافية
-    if (sec === 'أسئلة وصفية إضافية') {
-      total = openQuestions.length;
+  answered = openQuestions.filter(q => {
+    const val = state.open[q.key];
+    return val && val.trim().length > 0;
+  }).length;
+} else {
+  total = questions.filter(q => q.section === sec).length;
 
-      answered = openQuestions.reduce((count, oq) => {
-        const val = (state.open && state.open[oq.key]) || '';
-        return val.trim().length > 0 ? count + 1 : count;
-      }, 0);
+  answered = questions.filter(
+    q => q.section === sec &&
+         state.answers[q.id] &&
+         state.answers[q.id].answer
+  ).length;
+}
 
-    } else {
-      // بقية الأقسام (الأسئلة المغلقة)
-      const secQs = questions.filter(q => q.section === sec);
-      total = secQs.length;
-      answered = secQs.filter(
-        q => state.answers[q.id] && state.answers[q.id].answer
-      ).length;
-    }
-
-    li.innerHTML = `<span>${sec}</span><span>${answered}/${total || ''}</span>`;
+li.innerHTML = `<span>${sec}</span><span>${answered}/${total}</span>`;
 
     li.onclick = () => {
       currentSection = sec;
       renderNav();
       renderSection();
     };
-
     navEl.appendChild(li);
   });
 }
-
-
-
 
 function renderSection() {
   containerEl.innerHTML = '';

@@ -257,49 +257,6 @@ let currentSection = sections[0];
 //   });
 // }
 
-function renderNav() {
-  navEl.innerHTML = '';
-
-  sections.forEach(sec => {
-    const li = document.createElement('li');
-    li.className = 'nav-item' + (sec === currentSection ? ' active' : '');
-
-    let total = 0;
-    let answered = 0;
-
-    // قسم الأسئلة الوصفية الإضافية
-    if (sec === 'أسئلة وصفية إضافية') {
-      total = openQuestions.length;
-
-      answered = openQuestions.reduce((count, oq) => {
-        const val = (state.open && state.open[oq.key]) || '';
-        return val.trim().length > 0 ? count + 1 : count;
-      }, 0);
-
-    } else {
-      // بقية الأقسام (الأسئلة المغلقة)
-      const secQs = questions.filter(q => q.section === sec);
-      total = secQs.length;
-      answered = secQs.filter(
-        q => state.answers[q.id] && state.answers[q.id].answer
-      ).length;
-    }
-
-    li.innerHTML = `<span>${sec}</span><span>${answered}/${total || ''}</span>`;
-
-    li.onclick = () => {
-      currentSection = sec;
-      renderNav();
-      renderSection();
-    };
-
-    navEl.appendChild(li);
-  });
-}
-
-
-
-
 function renderSection() {
   containerEl.innerHTML = '';
 
