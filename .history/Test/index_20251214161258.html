@@ -14,26 +14,27 @@
     <p>نظام التقييم الذاتي لقطاع التكنولوجيا والتحول الرقمي</p>
   </div>
 </div>
+
 <div class="app-shell">
   <header>
     <div class="title-group">
       <h1>سجل فحص الالتزام - قطاع التكنولوجيا والتحول الرقمي</h1>
-      <span>التقييم الذاتي | GRC Self-Assessment – EA Department </span>
+      <span>التقييم الذاتي | GRC Self-Assessment – EA Department</span>
     </div>
     <div class="header-right">
       <img src="logo.png" alt="Tasheer Logo" class="header-logo" />
       <div class="actions">
-        <button class="btn btn-primary" id="btn-export">تصدير </button>
+        <button class="btn btn-primary" id="btn-export">تصدير JSON</button>
         <label class="btn btn-secondary">
-          استيراد
+          استيراد JSON
           <input type="file" id="import-file" accept="application/json" style="display:none" />
         </label>
         <button class="btn btn-outline" id="btn-summary">الملخص</button>
-        <button class="btn btn-outline" id="btn-print">طباعة الجزء الحالي</button>
+        <button class="btn btn-outline" id="btn-print">طباعة / PDF</button>
         <button class="btn btn-secondary" id="btn-dark">🌙/☀️</button>
         <button class="btn btn-danger" id="btn-clear">مسح كل البيانات</button>
         <button class="btn btn-secondary" id="btn-print-attachments">Print Attachments</button>
-        <button class="btn btn-primary" id="btn-Show-full">Report 1</button>
+        <!-- <button class="btn btn-primary" id="btn-Show-full">ShowFullReport</button> -->
         <button class="btn btn-primary" id="btn-print-full">Print Full PDF</button>
 
 
@@ -45,7 +46,7 @@
   <main>
     <aside class="sidebar">
       <div>
-        <div class="sidebar-title">القسم  / الباب </div>
+        <div class="sidebar-title"></div>
         <ul class="nav-list" id="section-nav"></ul>
       </div>
     </aside>
