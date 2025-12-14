@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>SD-PL-003 DevOps Operating Model</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Bootstrap 5.3 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  />
+
+  <style>
+    :root {
+      --book-bg: #ffffff;
+      --book-border: #dee2e6;
+      --book-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --accent: #0d6efd;
+    }
+
+    [data-bs-theme="dark"] {
+      --book-bg: #212529;
+      --book-border: #343a40;
+      --book-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --accent: #4dabf7;
+    }
+
+    body {
+      font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    .logo-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-wrapper img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    [data-bs-theme="dark"] .logo-wrapper img {
+      background: rgba(33, 37, 41, 0.9);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-card {
+      height: calc(100vh - 110px);
+      position: sticky;
+      top: 80px;
+      overflow: hidden;
+      box-shadow: var(--book-shadow);
+    }
+
+    .sidebar-scroll {
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
+      padding-right: 0.25rem;
+    }
+
+    .chapter-item {
+      cursor: pointer;
+      border-radius: 0.5rem;
+      margin-bottom: 0.25rem;
+      border: 1px solid transparent;
+      transition: all 0.15s ease-in-out;
+      font-size: 0.9rem;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .chapter-item.active {
+      background: rgba(13, 110, 253, 0.1);
+      border-color: rgba(13, 110, 253, 0.45);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    [data-bs-theme="dark"] .chapter-item.active {
+      background: rgba(77, 171, 247, 0.12);
+    }
+
+    .book-shell {
+      background: radial-gradient(circle at top left, #f8f9fa, #e9ecef);
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+    }
+
+    [data-bs-theme="dark"] .book-shell {
+      background: radial-gradient(circle at top left, #1c1f23, #111315);
+    }
+
+    .book-page {
+      background-color: var(--book-bg);
+      border-radius: 1.25rem;
+      border: 1px solid var(--book-border);
+      box-shadow: var(--book-shadow);
+      padding: 2.25rem 2.5rem;
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      position: relative;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .book-page.hidden {
+      display: none;
+    }
+
+    .page-number-pill {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.75rem;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(108, 117, 125, 0.08);
+      border: 1px solid rgba(108, 117, 125, 0.25);
+    }
+
+    .page-heading {
+      border-bottom: 1px solid rgba(108, 117, 125, 0.22);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .page-heading h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .page-heading small {
+      font-size: 0.8rem;
+    }
+
+    .page-body h3 {
+      font-size: 1.05rem;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-body p {
+      margin-bottom: 0.45rem;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .page-body ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-body li {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .book-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+
+    .book-footer small {
+      font-size: 0.8rem;
+    }
+
+    .flip-anim {
+      animation: flipIn 0.45s ease;
+    }
+
+    @keyframes flipIn {
+      from {
+        transform: rotateY(-8deg);
+        opacity: 0;
+      }
+      to {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    .admin-badge {
+      font-size: 0.75rem;
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+      border: 1px dashed rgba(108, 117, 125, 0.5);
+    }
+
+    .form-textarea-small {
+      font-size: 0.78rem;
+      max-height: 160px;
+    }
+
+    /* PRINT VIEW – make it like the Word document */
+    @media print {
+      body {
+        background: #ffffff !important;
+      }
+
+      nav,
+      .sidebar-card,
+      .book-footer,
+      #adminButton,
+      .offcanvas,
+      .offcanvas-backdrop {
+        display: none !important;
+      }
+
+      .book-shell {
+        padding: 0 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+      }
+
+      .book-page {
+        max-height: none !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 0 2rem 0;
+        page-break-after: always;
+      }
+
+      .book-page.hidden {
+        display: block !important;
+      }
+
+      .page-number-pill {
+        display: none !important;
+      }
+
+      .page-heading h2 {
+        font-size: 1.25rem !important;
+      }
+      .page-body p,
+      .page-body li {
+        font-size: 0.95rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm">
+    <div class="container-fluid px-4">
+      <div class="logo-wrapper">
+        <img src="" alt="Company Logo" id="companyLogo" />
+        <div class="d-flex flex-column">
+          <span class="fw-semibold text-uppercase small text-white-50">SD-PL-003 DevOps Operating Model</span>
+          <span class="fw-bold text-white" id="companyName">Tasheer Company</span>
+        </div>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <!-- Theme Toggle -->
+        <div class="form-check form-switch text-white">
+          <input class="form-check-input" type="checkbox" role="switch" id="themeToggle" />
+          <label class="form-check-label small" for="themeToggle">Dark mode</label>
+        </div>
+
+        <!-- Admin Button -->
+        <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-1"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#adminPanel"
+                id="adminButton">
+          <i class="bi bi-gear"></i>
+          <span>Admin</span>
+        </button>
+
+        <!-- Print Button -->
+        <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-1"
+                onclick="window.print()">
+          <i class="bi bi-printer"></i>
+          <span>Print Policy</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid py-4 px-4">
+    <div class="row g-3">
+      <!-- Sidebar / Index -->
+      <div class="col-lg-3">
+        <div class="card sidebar-card border-0">
+          <div class="card-body d-flex flex-column h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h6 class="mb-0">DevOps Operating Model</h6>
+                <small class="text-muted">Book index</small>
+              </div>
+              <span class="admin-badge text-muted">
+                v1.0 • 03-12-2025
+              </span>
+            </div>
+
+            <div class="sidebar-scroll mt-2">
+              <div class="list-group list-group-flush">
+                <button class="list-group-item list-group-item-action chapter-item active" data-page="page-cover">
+                  Cover &amp; Document Control
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-toc">
+                  Table of Contents
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-intro">
+                  1. Introduction &amp; Purpose
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-terms">
+                  2. Terms &amp; Abbreviations / Definitions
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-owner">
+                  3. Policy Owner &amp; Governance
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-scope">
+                  4. Policy Scope
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-objectives">
+                  5. Policy Objectives
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-results">
+                  6. Main Results from Implementation
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-enforcement">
+                  7. Policy Enforcement &amp; Compliance
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-relevant">
+                  8. Relevant Policies &amp; Documents
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-provisions-overview">
+                  9. Policy Provisions – Overview
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-provisions-1-4">
+                  9.x Detailed Provisions (1–4)
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-provisions-5-8">
+                  9.x Detailed Provisions (5–8)
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-provisions-9-12">
+                  9.x Detailed Provisions (9–12)
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-roles">
+                  10. Roles &amp; Responsibilities
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-raci">
+                  10.x RACI Matrix &amp; Enforcement
+                </button>
+                <button class="list-group-item list-group-item-action chapter-item" data-page="page-exceptions">
+                  11. Policy Exception
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <small class="text-muted d-block mb-1">
+                Use the index or arrows to flip through the DevOps “book”.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book page viewer -->
+      <div class="col-lg-9">
+        <div class="book-shell">
+
+          <!-- PAGE 1: COVER & DOCUMENT CONTROL -->
+          <div id="page-cover" class="book-page">
+            <div class="page-number-pill" id="pageIndicator">Page 1</div>
+            <div class="page-heading text-center border-0 mb-3">
+              <h2 class="mb-1">DevOps Operating Model</h2>
+              <small class="text-muted d-block">SD-PL-003 DevOps Operating Model</small>
+            </div>
+            <div class="page-body" id="content-page-cover">
+              <div class="row mb-4 justify-content-center">
+                <div class="col-md-8">
+                  <table class="table table-sm table-bordered align-middle mb-3">
+                    <tbody>
+                      <tr>
+                        <th class="w-25">Owner</th>
+                        <td>Eng. Nasser Al Yousef</td>
+                      </tr>
+                      <tr>
+                        <th>Owner Title</th>
+                        <td>Digitalization &amp; Technology GM</td>
+                      </tr>
+                      <tr>
+                        <th>Version Number</th>
+                        <td>V1.0</td>
+                      </tr>
+                      <tr>
+                        <th>Effective Date</th>
+                        <td>14-07-2025</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <h3>Document Control</h3>
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Document Name</th>
+                    <th>Version</th>
+                    <th>Issue/Rev. Date</th>
+                    <th>Author</th>
+                    <th>Owner</th>
+                    <th>Custodian</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>DEVOPS Operating Model</td>
+                    <td>V1.0</td>
+                    <td>14-07-2025</td>
+                    <td>Eng. Adel AlFeky</td>
+                    <td>Eng. Nasser AlYousef</td>
+                    <td>EA</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Document History</h3>
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Revision</th>
+                    <th>Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>03-12-2025</td>
+                    <td>1.0</td>
+                    <td>Update as per the Requirements of the running activities</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Prepared by</h3>
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Signature</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Adel Alfeky</td>
+                    <td>Chief Enterprise Architect</td>
+                    <td>03-12-2025</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Reviewed by</h3>
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Signature</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Khaled Ahmad Abdullah</td>
+                    <td>Solutions Delivery Director</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td>Abdulmohsen Almutairi</td>
+                    <td>Business Operation Director</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td>Faisal Alhaiti</td>
+                    <td>Infrastructure Operation Director</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td>Nasser AlYousef</td>
+                    <td>D&amp;T General Manager</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PAGE 2: TABLE OF CONTENTS -->
+          <div id="page-toc" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>Table of Contents</h2>
+              <small class="text-muted">Section listing as in the policy</small>
+            </div>
+            <div class="page-body" id="content-page-toc">
+              <ol>
+                <li>Introduction</li>
+                <li>Terms and Abbreviations / Definitions</li>
+                <li>Policy Owner</li>
+                <li>Policy Scope</li>
+                <li>Policy Objectives</li>
+                <li>Main results from the implementation of the policy</li>
+                <li>Policy Enforcement and Compliance</li>
+                <li>Relevant policies and documents</li>
+                <li>Policy Provisions</li>
+                <li>Roles and Responsibilities</li>
+                <li>Policy Exception</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- PAGE 3: INTRODUCTION & PURPOSE -->
+          <div id="page-intro" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>1. Introduction</h2>
+              <small class="text-muted">Purpose of the DevOps Operating Model</small>
+            </div>
+            <div class="page-body" id="content-page-intro">
+              <h3>Purpose</h3>
+              <p>
+                The purpose of this policy is to establish a unified, integrated, and authoritative Enterprise
+                DevOps Operating Model that governs all technology development, deployment, operational, and
+                release-related activities across:
+              </p>
+              <ul>
+                <li>Platforms Operations</li>
+                <li>Solutions Delivery</li>
+                <li>Infrastructure &amp; Operations</li>
+              </ul>
+              <p>
+                This policy defines how work is planned, built, tested, released, secured, operated, monitored,
+                and continuously improved using Azure DevOps as the mandated enterprise platform.
+              </p>
+              <p>
+                This Policy replaces isolated practices by enforcing one consistent framework covering:
+              </p>
+              <ul>
+                <li>DevOps</li>
+                <li>SDLC</li>
+                <li>Agile Execution</li>
+                <li>Release &amp; Deployment Management</li>
+                <li>Cloud Infrastructure Readiness</li>
+                <li>Operational Support (SRE)</li>
+                <li>Governance, Risk &amp; Compliance</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 4: TERMS -->
+          <div id="page-terms" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>2. Terms and Abbreviations / Definitions</h2>
+              <small class="text-muted">Key terminology used in this policy</small>
+            </div>
+            <div class="page-body" id="content-page-terms">
+              <p>
+                Understanding key terms is essential for the consistent application of this policy.
+                The following terms and abbreviations are used throughout this document:
+              </p>
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Term</th>
+                    <th>Definition</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>DevOps</td>
+                    <td>A methodology combining software development and IT operations to shorten the system development lifecycle and provide continuous delivery with high quality.</td>
+                  </tr>
+                  <tr>
+                    <td>CI/CD</td>
+                    <td>Continuous Integration/Continuous Delivery. Practices that involve frequent code integration and automated delivery to production.</td>
+                  </tr>
+                  <tr>
+                    <td>Continuous Integration</td>
+                    <td>The practice of automatically testing and integrating code into a shared repository frequently.</td>
+                  </tr>
+                  <tr>
+                    <td>Continuous Delivery</td>
+                    <td>The process of automating the delivery of code to production environments, ensuring readiness for deployment at any time.</td>
+                  </tr>
+                  <tr>
+                    <td>Infrastructure as Code</td>
+                    <td>Managing and provisioning infrastructure through code instead of manual processes.</td>
+                  </tr>
+                  <tr>
+                    <td>Automation</td>
+                    <td>The use of technology to perform tasks with minimal human intervention, especially in development and operational tasks.</td>
+                  </tr>
+                  <tr>
+                    <td>GitOps</td>
+                    <td>A framework using Git as the source of truth for declarative infrastructure and application management.</td>
+                  </tr>
+                  <tr>
+                    <td>Shift-Left Security</td>
+                    <td>Integrating security practices earlier in the development lifecycle to identify and fix vulnerabilities earlier.</td>
+                  </tr>
+                  <tr>
+                    <td>Epic</td>
+                    <td>A large body of work requiring multiple Features and Sprints.</td>
+                  </tr>
+                  <tr>
+                    <td>Feature</td>
+                    <td>A component of an Epic providing a business capability.</td>
+                  </tr>
+                  <tr>
+                    <td>User Story</td>
+                    <td>A granular requirement representing a unit of customer or technical value.</td>
+                  </tr>
+                  <tr>
+                    <td>Task</td>
+                    <td>A technical activity required to complete a User Story.</td>
+                  </tr>
+                  <tr>
+                    <td>CI/CD</td>
+                    <td>Automated build, test, and deployment pipelines in Azure DevOps.</td>
+                  </tr>
+                  <tr>
+                    <td>Scrum Master</td>
+                    <td>Role responsible for flow, governance, impediment resolution, and sprint execution quality.</td>
+                  </tr>
+                  <tr>
+                    <td>SRE</td>
+                    <td>Site Reliability Engineering practices for reliability and automation.</td>
+                  </tr>
+                  <tr>
+                    <td>IaC</td>
+                    <td>Infrastructure as Code (Terraform/Bicep/ARM).</td>
+                  </tr>
+                  <tr>
+                    <td>Release</td>
+                    <td>A packaged set of tested changes deployed to production.</td>
+                  </tr>
+                  <tr>
+                    <td>DoR / DoD</td>
+                    <td>Definition of Ready / Definition of Done.</td>
+                  </tr>
+                  <tr>
+                    <td>Azure DevOps</td>
+                    <td>Tasheer’s mandatory platform for planning, coding, testing, automation, and reporting.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PAGE 5: POLICY OWNER & GOVERNANCE -->
+          <div id="page-owner" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>3. Policy Owner &amp; Governance</h2>
+              <small class="text-muted">Ownership and organizational structure</small>
+            </div>
+            <div class="page-body" id="content-page-owner">
+              <p>
+                The policy owner is responsible for ensuring the policy is up to date, communicated,
+                and enforced across all relevant stakeholders.
+              </p>
+
+              <h3>3.1 Policy Owner</h3>
+              <p>Digitalization &amp; Technology GM</p>
+
+              <h3>3.2 Policy Custodian</h3>
+              <p>Chief Enterprise Architect</p>
+
+              <h3>3.3 Organizational Structure Reflected in This Policy</h3>
+              <p><strong>Overall Supervision (Sponsor)</strong></p>
+              <ul>
+                <li>Nasser Al Yousef — Digitalization &amp; Technology GM (Executive)</li>
+              </ul>
+              <p><strong>Platforms Operations</strong></p>
+              <ul>
+                <li>Abdulmohsen Saud Almutairi — Business Operations Director (Executive)</li>
+                <li>Mahmoud Abdulmohaymen Farhat — Platforms Operation Manager (Technical)</li>
+              </ul>
+              <p><strong>Solutions Delivery</strong></p>
+              <ul>
+                <li>Khaled Ahmad Abdullah — Executive Solution Delivery Director (Executive)</li>
+                <li>Khalid Abdulaziz Alghamdi — Chief Solutions Architect (Technical)</li>
+              </ul>
+              <p><strong>Infrastructure &amp; Operations</strong></p>
+              <ul>
+                <li>Faisal Hassan Alhaiti — Executive Infrastructure &amp; Operations Director (Executive)</li>
+                <li>Emad Saudi Oqdi — Systems Engineering Manager (Technical)</li>
+              </ul>
+              <p><strong>Policy Governance</strong></p>
+              <ul>
+                <li>Adel Abdelfattah Alfeky — Chief Enterprise Architect (Governance)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 6: POLICY SCOPE -->
+          <div id="page-scope" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>4. Policy Scope</h2>
+              <small class="text-muted">Applicability of this policy</small>
+            </div>
+            <div class="page-body" id="content-page-scope">
+              <p>
+                This policy applies to all employees, contractors, and third-party vendors involved in software development,
+                IT operations of all business solutions/applications (Tasheer Products).
+              </p>
+              <p>This policy applies to all:</p>
+              <ul>
+                <li>Digital products, enhancements, change requests, and incidents</li>
+                <li>Departments: Business Operations, Solutions Delivery, Infrastructure &amp; Operations</li>
+                <li>Contractors, vendors, and third-party teams working on Tasheer systems</li>
+                <li>All use of Azure DevOps Boards, Repos, Pipelines, Test Plans, and Dashboards</li>
+                <li>On-premises, cloud, hybrid, and integrated systems</li>
+                <li>CI/CD pipelines, IaC configurations, cloud deployments</li>
+              </ul>
+              <p>The policy covers the full value chain:</p>
+              <p><em>Epic → Feature → User Story → Tasks → CI/CD → Release → Operate → Optimize</em></p>
+            </div>
+          </div>
+
+          <!-- PAGE 7: POLICY OBJECTIVES -->
+          <div id="page-objectives" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>5. Policy Objectives</h2>
+              <small class="text-muted">Key objectives of this policy</small>
+            </div>
+            <div class="page-body" id="content-page-objectives">
+              <p>The key objectives of this policy are:</p>
+              <ul>
+                <li>Establish a unified DevOps Operating Model across all departments.</li>
+                <li>Standardize planning, development, testing, release, and operational processes.</li>
+                <li>Enforce mandatory usage of Azure DevOps for all work.</li>
+                <li>Enable automation-first, cloud-ready, secure-by-design delivery.</li>
+                <li>Ensure full traceability and compliance with internal GRC requirements.</li>
+                <li>Integrate SDLC, DevOps, and Release activities under a single umbrella.</li>
+                <li>Define clear roles, responsibilities, and governance touchpoints.</li>
+                <li>Enable predictive monitoring, proactive incident prevention, and continuous improvement.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 8: RESULTS -->
+          <div id="page-results" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>6. Main results from the implementation of the policy</h2>
+              <small class="text-muted">Expected results and measured outcomes</small>
+            </div>
+            <div class="page-body" id="content-page-results">
+              <p>The successful implementation of this policy is expected to deliver the following results:</p>
+              <ul>
+                <li><strong>Increased Deployment Frequency:</strong> Enabling the organization to release software updates more frequently and reliably.</li>
+                <li><strong>Reduced Lead Time:</strong> The time taken from code commit to production deployment will be significantly shortened.</li>
+                <li><strong>Improved Change Failure Rate:</strong> Automated testing will reduce failures and service degradations.</li>
+                <li><strong>Enhanced MTTR:</strong> Faster recovery from incidents with automated monitoring and issue detection systems.</li>
+                <li><strong>Auditability and Compliance:</strong> Clear traceability and reporting of all changes made to systems.</li>
+              </ul>
+              <p>Also, the following measured outcomes must be achieved by implementing this policy:</p>
+              <ul>
+                <li>100% of DevOps work recorded and traceable in Azure DevOps</li>
+                <li>100% CI/CD adoption for supported applications</li>
+                <li>Automated security scanning integrated into pipelines</li>
+                <li>Standardized release cycles with full governance</li>
+                <li>Predictive monitoring (AI-based) across environments</li>
+                <li>Clear sprint delivery transparency</li>
+                <li>Unified reporting dashboards available to leadership</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 9: ENFORCEMENT -->
+          <div id="page-enforcement" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>7. Policy Enforcement and Compliance</h2>
+              <small class="text-muted">How adherence is ensured and measured</small>
+            </div>
+            <div class="page-body" id="content-page-enforcement">
+              <p>
+                Compliance with this policy is mandatory, and the following processes will ensure its effectiveness:
+              </p>
+
+              <h3>7.1 Policy Dissemination and Awareness</h3>
+              <p>
+                This policy will be made accessible to all relevant personnel. Mandatory training will be conducted to
+                familiarize teams with DevOps principles, tools, and practices.
+              </p>
+
+              <h3>7.2 Process Implementation and Tooling</h3>
+              <p>
+                All teams will use approved tools to automate and manage the software delivery pipeline.
+              </p>
+
+              <h3>7.3 Compliance Monitoring and Reporting</h3>
+              <p>
+                Continuous monitoring metrics and other KPIs will assess the policy's effectiveness and adherence.
+                Regular audits will ensure that practices align with policy requirements.
+              </p>
+
+              <h3>7.4 Non-Compliance and Enforcement</h3>
+              <p>
+                Non-compliance will result in corrective actions, which may include re-training, adjustments to
+                workflows, or process modifications.
+              </p>
+
+              <h3>7.5 Policy Review and Update</h3>
+              <p>
+                The policy will be reviewed annually to ensure it stays relevant and aligned with the evolving needs
+                of the organization.
+              </p>
+            </div>
+          </div>
+
+          <!-- PAGE 10: RELEVANT POLICIES -->
+          <div id="page-relevant" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>8. Relevant policies and documents</h2>
+              <small class="text-muted">Umbrella relationship to other policies</small>
+            </div>
+            <div class="page-body" id="content-page-relevant">
+              <p>
+                This policy is the master umbrella, superseding individual practices and integrating:
+              </p>
+              <ul>
+                <li>SD-PL-001 SDLC Management Policy</li>
+                <li>SD-PL-003 DevOps Management Policy</li>
+                <li>SD-PL-006 Release Management Policy</li>
+                <li>Deploy Management Policy</li>
+                <li>Change &amp; Configuration Management Policy</li>
+              </ul>
+
+              <h3>Detailed Procedure Steps (aligned with SDLC Policy style)</h3>
+              <p>A summarized sample (full detail can extend to 20 pages like the SDLC policy):</p>
+              <ul>
+                <li>Initiation → Epic created, reviewed, approved</li>
+                <li>Analysis → Requirements, dependencies, design decisions</li>
+                <li>Design → Architecture, cloud design review, interface definition</li>
+                <li>Sprint Planning → Capacity, dependencies, prioritization</li>
+                <li>Development → Coding, PR reviews, scanning</li>
+                <li>Testing → Functional, security, integration, performance</li>
+                <li>Release Approval → Governance gates, signoffs</li>
+                <li>Deployment → Automated CI/CD</li>
+                <li>Validation → Smoke tests, monitoring</li>
+                <li>Operations → SRE practices</li>
+                <li>Continuous Improvement → Lessons learned</li>
+                <li>Archiving &amp; Documentation</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 11: POLICY PROVISIONS OVERVIEW -->
+          <div id="page-provisions-overview" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>9. Policy Provisions</h2>
+              <small class="text-muted">High-level provisions overview</small>
+            </div>
+            <div class="page-body" id="content-page-provisions-overview">
+              <h3>CI/CD Pipeline</h3>
+              <ul>
+                <li>All code must be managed through an approved Version Control System like Git.</li>
+                <li>Automated pipelines are mandatory for new applications and major updates.</li>
+                <li>Pipelines must include automated builds, unit tests, and integration tests.</li>
+              </ul>
+
+              <h3>Automation</h3>
+              <ul>
+                <li>
+                  Infrastructure provisioning and configuration should be managed through Infrastructure as Code (IaC)
+                  as if applicable and as much as possible of practicing.
+                </li>
+                <li>
+                  Manual deployments to production are prohibited except for pre-approved emergency changes.
+                </li>
+              </ul>
+
+              <h3>Collaboration and Communication</h3>
+              <ul>
+                <li>Continuous collaboration between development, operations, and security teams is mandatory.</li>
+                <li>Shared tools and dashboards must be used to monitor application health and infrastructure.</li>
+              </ul>
+
+              <h3>Security Integration ("Shift-Left")</h3>
+              <ul>
+                <li>Security practices must be integrated early in the CI/CD pipeline.</li>
+              </ul>
+
+              <h3>Monitoring and Feedback</h3>
+              <ul>
+                <li>Continuous monitoring of production systems must be implemented to track performance, availability, and security.</li>
+                <li>Alerts for critical issues should be automatically generated and directed to the relevant teams.</li>
+              </ul>
+
+              <h3>Release Management</h3>
+              <ul>
+                <li>All deployments must follow an automated, traceable, and repeatable process.</li>
+                <li>Change Management procedures must be adhered to during all production releases.</li>
+              </ul>
+
+              <p class="mt-3">
+                The Umbrella DevOps Policy consists of 12 Provisions, each structured like the SDLC policy:
+              </p>
+              <p><em>Detailed provisions (1–12) are documented in the following pages.</em></p>
+            </div>
+          </div>
+
+          <!-- PAGE 12: DETAILED PROVISIONS 1–4 -->
+          <div id="page-provisions-1-4" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>9.x Detailed Provisions (1–4)</h2>
+              <small class="text-muted">Work Intake and Sprint Planning</small>
+            </div>
+            <div class="page-body" id="content-page-provisions-1-4">
+              <h3>Provision 1: Work Intake &amp; Demand Management</h3>
+              <ul>
+                <li>All demands MUST enter Azure DevOps as Epics.</li>
+                <li>Business, Architecture, or Technical teams may raise Epics.</li>
+                <li>EA reviews Epics for feasibility and architecture alignment.</li>
+                <li>Department Directors approve prioritization.</li>
+              </ul>
+
+              <h3>Provision 2: Epic &amp; Feature Breakdown</h3>
+              <ul>
+                <li>Each Epic MUST be decomposed into Features before planning.</li>
+                <li>Features MUST include dependencies (Dev, Ops, Infra).</li>
+                <li>Scrum Master ensures readiness before sprint planning.</li>
+                <li>All Features MUST contain acceptance criteria.</li>
+              </ul>
+
+              <h3>Provision 3: Backlog Management</h3>
+              <ul>
+                <li>User Stories MUST follow INVEST criteria.</li>
+                <li>All work MUST map Epic → Feature → User Story → Tasks.</li>
+                <li>No work may be performed outside an approved Work Item.</li>
+                <li>Scrum Master ensures backlog grooming cadence.</li>
+              </ul>
+
+              <h3>Provision 4: Sprint Planning &amp; Capacity Management</h3>
+              <ul>
+                <li>Sprint duration set as two weeks unless approved otherwise.</li>
+                <li>Scrum Master leads planning, ensuring realistic commitments.</li>
+                <li>All Dependencies MUST be resolved before sprint finalization.</li>
+                <li>Capacity MUST reflect Dev, QA, Infra &amp; Ops availability.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 13: DETAILED PROVISIONS 5–8 -->
+          <div id="page-provisions-5-8" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>9.x Detailed Provisions (5–8)</h2>
+              <small class="text-muted">Development, Testing, CI/CD &amp; Release</small>
+            </div>
+            <div class="page-body" id="content-page-provisions-5-8">
+              <h3>Provision 5: Development Standards</h3>
+              <ul>
+                <li>All development MUST occur in Azure DevOps Repos.</li>
+                <li>Mandatory branch policies apply (PR, reviewers, CI checks).</li>
+                <li>SAST/DAST scanning MUST pass before merging.</li>
+                <li>Code MUST not bypass CI pipelines.</li>
+              </ul>
+
+              <h3>Provision 6: Testing Standards</h3>
+              <ul>
+                <li>Test Plans stored in Azure DevOps Test Plans.</li>
+                <li>Automated tests MUST cover regression and critical paths.</li>
+                <li>Bug workflow MUST be followed as per ADO states.</li>
+                <li>The Scrum Master ensures QA readiness before release.</li>
+              </ul>
+
+              <h3>Provision 7: CI/CD &amp; Automation</h3>
+              <ul>
+                <li>All builds MUST be automated.</li>
+                <li>Deployments MUST use Azure DevOps Pipelines.</li>
+                <li>Rollback plans MUST exist for every release.</li>
+                <li>Secrets MUST be stored securely (Key Vault / Secret Store).</li>
+              </ul>
+
+              <h3>Provision 8: Release Management</h3>
+              <ul>
+                <li>All releases MUST comply with SD-PL-006 Release Policy.</li>
+                <li>Manual deployments are prohibited.</li>
+                <li>Release approvals MUST include Dev, QA, Ops, and Infra.</li>
+                <li>Post-release validation MUST be documented in ADO.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 14: DETAILED PROVISIONS 9–12 -->
+          <div id="page-provisions-9-12" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>9.x Detailed Provisions (9–12)</h2>
+              <small class="text-muted">Infrastructure, SRE, KPIs &amp; Compliance</small>
+            </div>
+            <div class="page-body" id="content-page-provisions-9-12">
+              <h3>Provision 9: Infrastructure Readiness &amp; IaC</h3>
+              <ul>
+                <li>Infra &amp; Ops MUST build environments using IaC.</li>
+                <li>Cloud readiness assessments MUST precede deployment.</li>
+                <li>Monitoring MUST be configured before go-live.</li>
+                <li>SRE error budgets MUST guide release frequency.</li>
+              </ul>
+
+              <h3>Provision 10: Incident, Problem &amp; SRE Governance</h3>
+              <ul>
+                <li>All incidents MUST be recorded in Azure DevOps.</li>
+                <li>MTTA/MTTR MUST be tracked and reported weekly.</li>
+                <li>RCA MUST be completed within 48 hours.</li>
+                <li>Recurring issues MUST feed the backlog as Features/Stories.</li>
+              </ul>
+
+              <h3>Provision 11: Reporting &amp; KPIs</h3>
+              <ul>
+                <li>Leadership dashboards MUST be updated automatically.</li>
+                <li>Mandatory KPIs:
+                  <ul>
+                    <li>Deployment Frequency</li>
+                    <li>Lead Time for Changes</li>
+                    <li>MTTR</li>
+                    <li>Change Failure Rate</li>
+                    <li>Sprint Predictability</li>
+                  </ul>
+                </li>
+                <li>Scrum Master MUST publish weekly sprint report.</li>
+              </ul>
+
+              <h3>Provision 12: Compliance &amp; Quality Gates</h3>
+              <ul>
+                <li>Architecture review MUST occur before development.</li>
+                <li>DoR/DoD MUST be applied for all Stories.</li>
+                <li>Change approvals MUST comply with Release &amp; Change Policy.</li>
+                <li>Evidence MUST be stored in Azure DevOps for audit.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 15: ROLES & RESPONSIBILITIES -->
+          <div id="page-roles" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>10. Roles and Responsibilities</h2>
+              <small class="text-muted">Who does what in the DevOps model</small>
+            </div>
+            <div class="page-body" id="content-page-roles">
+              <p>The following roles are essential to the successful implementation of DevOps practices:</p>
+              <ul>
+                <li><strong>Digitalization &amp; Technology GM</strong><br />Has final authority over DevOps delivery and governance.</li>
+                <li><strong>Chief Enterprise Architect</strong><br />Ensures alignment with architecture and compliance.</li>
+                <li><strong>Executive Platform Director</strong><br />Owner of environmental readiness, operations, monitoring, and stability.</li>
+                <li><strong>Executive Solution Delivery Director</strong><br />Owner of solution delivery, testing, and development outcomes.</li>
+                <li><strong>Executive Infra &amp; Ops Director</strong><br />Owner of infra readiness, Infra operations, monitoring, and stability.</li>
+                <li><strong>Platforms Operation Manager</strong><br />Ensures application operations, SRE practices, and platform governance.</li>
+                <li><strong>Chief Solutions Architect</strong><br />Ensures architectural integrity across Features and Stories.</li>
+                <li><strong>Systems Engineering Manager</strong><br />Ensures cloud, network, and infra readiness (IaC, monitoring).</li>
+                <li><strong>DevOps Engineer</strong><br />Design, implement, and maintain CI/CD pipelines.</li>
+                <li><strong>Software Developer</strong><br />Develops code, integrates it into the CI pipeline, and resolves code, conducts reviews, and contributes to automated tests.</li>
+                <li><strong>QA Team</strong><br />Ensures testing completeness and quality assurance.</li>
+                <li><strong>IT Operations Engineer</strong><br />Manages production environments and provides feedback for improving system stability.</li>
+                <li><strong>Operations Team</strong><br />Manage deployments, monitor performance, and handle incidents.</li>
+              </ul>
+
+              <h3>Scrum Master (TDM) Responsibilities</h3>
+              <p>The Scrum Master is responsible for (TDM) for:</p>
+              <ul>
+                <li>Ensuring all work is tracked in Azure DevOps.</li>
+                <li>Leading refinement, planning, daily scrums, and sprint reviews.</li>
+                <li>Ensuring adherence to workflow, DoR, DoD, testing standards, and CI/CD gates.</li>
+                <li>Removing cross-team blockers (Dev/Ops/Infra).</li>
+                <li>Publishing weekly governance reports.</li>
+                <li>Enforcing compliance with DevOps, SDLC &amp; Release Policy.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 16: RACI & ENFORCEMENT -->
+          <div id="page-raci" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>10.x RACI Matrix &amp; Enforcement</h2>
+              <small class="text-muted">Accountability view</small>
+            </div>
+            <div class="page-body" id="content-page-raci">
+              <h3>RACI Matrix</h3>
+              <p>(Follows the SDLC policy structure)</p>
+              <p>(Condensed example — full table available on request.)</p>
+
+              <table class="table table-sm table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th>Activity</th>
+                    <th>PO</th>
+                    <th>SM</th>
+                    <th>Dev</th>
+                    <th>QA</th>
+                    <th>Ops</th>
+                    <th>Infra</th>
+                    <th>Arch</th>
+                    <th>EA</th>
+                    <th>Director</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Epic Approval</td>
+                    <td>C</td>
+                    <td>R</td>
+                    <td>C</td>
+                    <td>—</td>
+                    <td>C</td>
+                    <td>C</td>
+                    <td>R</td>
+                    <td>A</td>
+                    <td>A</td>
+                  </tr>
+                  <tr>
+                    <td>Sprint Execution</td>
+                    <td>C</td>
+                    <td>A</td>
+                    <td>R</td>
+                    <td>R</td>
+                    <td>C</td>
+                    <td>C</td>
+                    <td>C</td>
+                    <td>—</td>
+                    <td>—</td>
+                  </tr>
+                  <tr>
+                    <td>Release Approval</td>
+                    <td>C</td>
+                    <td>R</td>
+                    <td>R</td>
+                    <td>R</td>
+                    <td>A</td>
+                    <td>A</td>
+                    <td>C</td>
+                    <td>C</td>
+                    <td>A</td>
+                  </tr>
+                  <tr>
+                    <td>Compliance Reporting</td>
+                    <td>—</td>
+                    <td>R</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>C</td>
+                    <td>A</td>
+                    <td>A</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Enforcement</h3>
+              <p>Non-compliance results in:</p>
+              <ul>
+                <li>Rejected deployments</li>
+                <li>Blocked Pull Requests</li>
+                <li>Audit findings</li>
+                <li>Corrective action plans</li>
+                <li>Escalation to D&amp;T GM</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- PAGE 17: POLICY EXCEPTION -->
+          <div id="page-exceptions" class="book-page hidden">
+            <div class="page-number-pill"></div>
+            <div class="page-heading">
+              <h2>11. Policy Exception</h2>
+              <small class="text-muted">How to request an exception</small>
+            </div>
+            <div class="page-body" id="content-page-exceptions">
+              <p>
+                Exceptions to the DevOps Policy may be granted in exceptional circumstances where adherence
+                would impede critical business operations. All requests for exceptions must be documented and
+                approved.
+              </p>
+              <p>Any exception MUST be:</p>
+              <ul>
+                <li>Approved by Chief Enterprise Architect</li>
+                <li>Documented in the Azure DevOps Exception Register</li>
+                <li>Time-bound and reviewed periodically</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Footer: Paging & Info -->
+          <div class="book-footer">
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm" id="prevPageBtn">
+                ‹ Previous
+              </button>
+              <button class="btn btn-outline-primary btn-sm" id="nextPageBtn">
+                Next ›
+              </button>
+            </div>
+            <small class="text-muted">
+              SD-PL-003 • DevOps Operating Model • Effective Date: 14-07-2025
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Admin Offcanvas -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="adminPanel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Admin Panel</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="small text-muted">
+        Adjust how the DevOps Operating Model “book” looks and update its content.
+        Admin changes are stored locally in your browser (no server).
+      </p>
+
+      <hr />
+
+      <!-- Branding -->
+      <div class="mb-3">
+        <h6>Branding</h6>
+        <div class="mb-2">
+          <label for="companyNameInput" class="form-label small mb-1">Company name</label>
+          <input type="text" class="form-control form-control-sm" id="companyNameInput" placeholder="Tasheer Company" />
+        </div>
+        <div class="mb-2">
+          <label class="form-label small mb-1">Logo image</label>
+          <input type="file" class="form-control form-control-sm" id="logoInput" accept="image/*" />
+          <div class="form-text small">
+            Upload PNG/JPG; it will be stored in your browser and shown in the top bar.
+          </div>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary mt-1" id="resetBrandBtn">Reset branding</button>
+      </div>
+
+      <hr />
+
+      <!-- Typography & Theme -->
+      <div class="mb-3">
+        <h6>Typography &amp; Theme</h6>
+        <div class="mb-2">
+          <label for="fontSelect" class="form-label small mb-1">Book font</label>
+          <select id="fontSelect" class="form-select form-select-sm">
+            <option value="roboto">Roboto (default)</option>
+            <option value="cairo">Cairo (Arabic-friendly)</option>
+            <option value="system">System UI</option>
+            <option value="serif">Serif (Times-like)</option>
+          </select>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="themeToggleAdmin" />
+          <label class="form-check-label small" for="themeToggleAdmin">Use dark mode</label>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Content Editor -->
+      <div>
+        <h6>Page Content Editor</h6>
+        <p class="small text-muted mb-2">
+          Choose a section, edit its HTML content, and click <strong>Save section</strong>.
+          Use carefully for policy-controlled content.
+        </p>
+        <div class="mb-2">
+          <label for="sectionSelect" class="form-label small mb-1">Select section</label>
+          <select id="sectionSelect" class="form-select form-select-sm">
+            <option value="content-page-cover">Cover &amp; Document Control</option>
+            <option value="content-page-toc">Table of Contents</option>
+            <option value="content-page-intro">1 – Introduction &amp; Purpose</option>
+            <option value="content-page-terms">2 – Terms &amp; Abbreviations</option>
+            <option value="content-page-owner">3 – Policy Owner &amp; Governance</option>
+            <option value="content-page-scope">4 – Policy Scope</option>
+            <option value="content-page-objectives">5 – Policy Objectives</option>
+            <option value="content-page-results">6 – Results</option>
+            <option value="content-page-enforcement">7 – Enforcement &amp; Compliance</option>
+            <option value="content-page-relevant">8 – Relevant Policies</option>
+            <option value="content-page-provisions-overview">9 – Provisions Overview</option>
+            <option value="content-page-provisions-1-4">9 – Provisions 1–4</option>
+            <option value="content-page-provisions-5-8">9 – Provisions 5–8</option>
+            <option value="content-page-provisions-9-12">9 – Provisions 9–12</option>
+            <option value="content-page-roles">10 – Roles &amp; Responsibilities</option>
+            <option value="content-page-raci">10 – RACI &amp; Enforcement</option>
+            <option value="content-page-exceptions">11 – Policy Exception</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label for="sectionEditor" class="form-label small mb-1">HTML content</label>
+          <textarea id="sectionEditor" class="form-control form-control-sm form-textarea-small" rows="6"></textarea>
+        </div>
+        <div class="d-flex gap-2 mb-2">
+          <button class="btn btn-sm btn-outline-secondary" id="loadSectionBtn">Load section</button>
+          <button class="btn btn-sm btn-primary" id="saveSectionBtn">Save section</button>
+        </div>
+        <button class="btn btn-sm btn-outline-danger" id="resetAllContentBtn">
+          Reset all content to default
+        </button>
+      </div>
+
+      <hr />
+
+      <div class="mt-2">
+        <small class="text-muted">
+          Default admin password for this demo UI is <code>devops2025</code>.
+          You can change it inside the script if needed.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    (function () {
+      const ADMIN_PASSWORD = "devops2025";
+
+      const chapters = Array.from(document.querySelectorAll(".chapter-item"));
+      const pages = Array.from(document.querySelectorAll(".book-page"));
+      const pageIndicator = document.getElementById("pageIndicator");
+      const prevPageBtn = document.getElementById("prevPageBtn");
+      const nextPageBtn = document.getElementById("nextPageBtn");
+
+      const companyNameSpan = document.getElementById("companyName");
+      const companyNameInput = document.getElementById("companyNameInput");
+      const logoImg = document.getElementById("companyLogo");
+      const logoInput = document.getElementById("logoInput");
+      const resetBrandBtn = document.getElementById("resetBrandBtn");
+
+      const fontSelect = document.getElementById("fontSelect");
+      const themeToggle = document.getElementById("themeToggle");
+      const themeToggleAdmin = document.getElementById("themeToggleAdmin");
+
+      const sectionSelect = document.getElementById("sectionSelect");
+      const sectionEditor = document.getElementById("sectionEditor");
+      const loadSectionBtn = document.getElementById("loadSectionBtn");
+      const saveSectionBtn = document.getElementById("saveSectionBtn");
+      const resetAllContentBtn = document.getElementById("resetAllContentBtn");
+      const adminButton = document.getElementById("adminButton");
+
+      const TOTAL_PAGES = pages.length;
+      let currentPageIndex = 0;
+
+      function updatePageIndicator(index) {
+        const activePage = pages[index];
+        const indicator = activePage.querySelector(".page-number-pill");
+        if (indicator) {
+          indicator.textContent = "Page " + (index + 1) + " / " + TOTAL_PAGES;
+        }
+      }
+
+      function setPageIndex(newIndex, animate = true) {
+        if (newIndex < 0 || newIndex >= TOTAL_PAGES) return;
+        pages.forEach((page, idx) => {
+          if (idx === newIndex) {
+            page.classList.remove("hidden");
+            if (animate) {
+              page.classList.remove("flip-anim");
+              void page.offsetWidth;
+              page.classList.add("flip-anim");
+            }
+          } else {
+            page.classList.add("hidden");
+            page.classList.remove("flip-anim");
+          }
+        });
+
+        chapters.forEach((ch) => ch.classList.remove("active"));
+        const activeId = pages[newIndex].id;
+        const activeChapter = chapters.find(
+          (ch) => ch.getAttribute("data-page") === activeId
+        );
+        if (activeChapter) activeChapter.classList.add("active");
+
+        currentPageIndex = newIndex;
+        updatePageIndicator(newIndex);
+      }
+
+      prevPageBtn.addEventListener("click", () => {
+        setPageIndex(currentPageIndex - 1);
+      });
+
+      nextPageBtn.addEventListener("click", () => {
+        setPageIndex(currentPageIndex + 1);
+      });
+
+      chapters.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const pageId = btn.getAttribute("data-page");
+          const index = pages.findIndex((p) => p.id === pageId);
+          if (index !== -1) {
+            setPageIndex(index);
+          }
+        });
+      });
+
+      function applyTheme(theme) {
+        const root = document.documentElement;
+        root.setAttribute("data-bs-theme", theme);
+        const isDark = theme === "dark";
+        themeToggle.checked = isDark;
+        themeToggleAdmin.checked = isDark;
+      }
+
+      function applyFont(fontKey) {
+        let fontFamily;
+        switch (fontKey) {
+          case "cairo":
+            fontFamily = "'Cairo', system-ui, sans-serif";
+            break;
+          case "system":
+            fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+            break;
+          case "serif":
+            fontFamily = "Georgia, 'Times New Roman', serif";
+            break;
+          case "roboto":
+          default:
+            fontFamily = "'Roboto', system-ui, sans-serif";
+        }
+        document.body.style.fontFamily = fontFamily;
+      }
+
+      function saveSettings() {
+        const settings = {
+          theme: document.documentElement.getAttribute("data-bs-theme") || "light",
+          font: fontSelect.value,
+          companyName: companyNameSpan.textContent || "",
+        };
+        const logoData = localStorage.getItem("devopsLogoDataUrl") || null;
+        settings.logo = logoData;
+        localStorage.setItem("devopsBookSettings", JSON.stringify(settings));
+      }
+
+      function loadSettings() {
+        const raw = localStorage.getItem("devopsBookSettings");
+        if (!raw) return;
+        try {
+          const settings = JSON.parse(raw);
+          if (settings.theme) applyTheme(settings.theme);
+          if (settings.font) {
+            fontSelect.value = settings.font;
+            applyFont(settings.font);
+          }
+          if (settings.companyName) {
+            companyNameSpan.textContent = settings.companyName;
+            companyNameInput.value = settings.companyName;
+          }
+          if (settings.logo) {
+            logoImg.src = settings.logo;
+          }
+        } catch (e) {
+          console.warn("Failed to parse settings:", e);
+        }
+      }
+
+      themeToggle.addEventListener("change", () => {
+        applyTheme(themeToggle.checked ? "dark" : "light");
+        saveSettings();
+      });
+
+      themeToggleAdmin.addEventListener("change", () => {
+        applyTheme(themeToggleAdmin.checked ? "dark" : "light");
+        saveSettings();
+      });
+
+      fontSelect.addEventListener("change", () => {
+        applyFont(fontSelect.value);
+        saveSettings();
+      });
+
+      companyNameInput.addEventListener("input", () => {
+        companyNameSpan.textContent = companyNameInput.value || "Tasheer Company";
+        saveSettings();
+      });
+
+      logoInput.addEventListener("change", (evt) => {
+        const file = evt.target.files && evt.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const dataUrl = e.target.result;
+          logoImg.src = dataUrl;
+          localStorage.setItem("devopsLogoDataUrl", dataUrl);
+          saveSettings();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      resetBrandBtn.addEventListener("click", () => {
+        companyNameSpan.textContent = "Tasheer Company";
+        companyNameInput.value = "Tasheer Company";
+        logoImg.src = "";
+        localStorage.removeItem("devopsLogoDataUrl");
+        saveSettings();
+      });
+
+      function saveAllContent() {
+        const contentIds = Array.from(
+          document.querySelectorAll("[id^='content-page-']")
+        ).map((el) => el.id);
+        const store = {};
+        contentIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            store[id] = el.innerHTML;
+          }
+        });
+        localStorage.setItem("devopsBookContentOverrides", JSON.stringify(store));
+      }
+
+      function loadAllContent() {
+        const raw = localStorage.getItem("devopsBookContentOverrides");
+        if (!raw) return;
+        try {
+          const store = JSON.parse(raw);
+          Object.entries(store).forEach(([id, html]) => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = html;
+          });
+        } catch (e) {
+          console.warn("Failed to load content overrides:", e);
+        }
+      }
+
+      loadSectionBtn.addEventListener("click", () => {
+        const id = sectionSelect.value;
+        const el = document.getElementById(id);
+        if (!el) return;
+        sectionEditor.value = el.innerHTML.trim();
+      });
+
+      saveSectionBtn.addEventListener("click", () => {
+        const id = sectionSelect.value;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = sectionEditor.value;
+        saveAllContent();
+        alert("Section saved.");
+      });
+
+      resetAllContentBtn.addEventListener("click", () => {
+        if (
+          !confirm(
+            "This will remove all local content changes and reload the original policy text. Proceed?"
+          )
+        )
+          return;
+        localStorage.removeItem("devopsBookContentOverrides");
+        location.reload();
+      });
+
+      adminButton.addEventListener("click", (e) => {
+        const alreadyAuthorized = sessionStorage.getItem("devopsAdminAuth") === "1";
+        if (alreadyAuthorized) return;
+        const pwd = prompt("Enter admin password to edit (hint: devops2025):");
+        if (pwd === ADMIN_PASSWORD) {
+          sessionStorage.setItem("devopsAdminAuth", "1");
+        } else {
+          e.preventDefault();
+          e.stopPropagation();
+          alert("Incorrect password. Admin panel is locked.");
+        }
+      });
+
+      loadSettings();
+      loadAllContent();
+      applyFont(fontSelect.value || "roboto");
+      if (!document.documentElement.getAttribute("data-bs-theme")) {
+        applyTheme("light");
+      }
+      setPageIndex(0, false);
+    })();
+  </script>
+</body>
+</html>

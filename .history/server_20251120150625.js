@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 5503;
+const port = 5500;
 
 app.use(express.static(__dirname));
 

@@ -1002,6 +1002,32 @@ document.getElementById("btn-Show-full").onclick = ShowFullReport;
 
 // 🟩 STEP 2 — Add this FULL REPORT function 
 
+// ===============================
+// ADD: Descriptive Open Questions
+// ===============================
+
+html += `<div class="page-break"></div>`;
+html += `<h2 class="section-title">أسئلة وصفية إضافية</h2>`;
+
+html += `
+  <table class="data">
+    <tr>
+      <th style="width:35%">السؤال</th>
+      <th>الإجابة الوصفية</th>
+    </tr>
+`;
+
+openQuestions.forEach(item => {
+  const answer = state.open[item.key] || "—";
+  html += `
+    <tr>
+      <td>${item.label}</td>
+      <td>${answer.replace(/\n/g, "<br>")}</td>
+    </tr>
+  `;
+});
+
+html += `</table>`;
 
 
 function printFullReport() {
@@ -1362,33 +1388,7 @@ function printFullReport() {
     html += `</table>`;
   });
 
-  // ===============================
-// ADD: Descriptive Open Questions
-// ===============================
-
-html += `<div class="page-break"></div>`;
-html += `<h2 class="section-title">أسئلة وصفية إضافية</h2>`;
-
-html += `
-  <table class="data">
-    <tr>
-      <th style="width:35%">السؤال</th>
-      <th>الإجابة الوصفية</th>
-    </tr>
-`;
-
-openQuestions.forEach(item => {
-  const answer = state.open[item.key] || "—";
-  html += `
-    <tr>
-      <td>${item.label}</td>
-      <td>${answer.replace(/\n/g, "<br>")}</td>
-    </tr>
-  `;
-});
-
-html += `</table>`;
-
+  
 
   // ---- 5) Attachments section at the end ----
 

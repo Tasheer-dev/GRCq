@@ -1002,8 +1002,6 @@ document.getElementById("btn-Show-full").onclick = ShowFullReport;
 
 // 🟩 STEP 2 — Add this FULL REPORT function 
 
-
-
 function printFullReport() {
   const today = new Date().toLocaleDateString('ar-SA');
 
@@ -1391,9 +1389,6 @@ html += `</table>`;
 
 
   // ---- 5) Attachments section at the end ----
-
-
-  
   const attachmentRows = questions
     .map(q => {
       const ans = state.answers[q.id];

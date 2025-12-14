@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SD-PL-003 DevOps Operating Model – Tasheer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Cairo font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style id="baseStyles">
+    :root {
+      --primary-color: #2563eb;
+      --accent-color: #22c55e;
+      --highlight-color: #f97316;
+      --base-font-size: 16px;
+      --base-line-height: 1.5;
+      --card-padding: 1.1rem;
+      --section-margin: 1.5rem;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: var(--base-font-size);
+      line-height: var(--base-line-height);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-theme {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    body.light-theme {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .sidebar {
+      min-width: 260px;
+      max-width: 260px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      border-right: 1px solid;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body.dark-theme .sidebar {
+      background: #020617;
+      border-color: #1f2937;
+      color: #e5e7eb;
+    }
+
+    body.light-theme .sidebar {
+      background: #ffffff;
+      border-color: #e5e7eb;
+      color: #111827;
+    }
+
+    .sidebar .nav-link {
+      border-radius: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    body.dark-theme .sidebar .nav-link {
+      color: #9ca3af;
+    }
+
+    body.light-theme .sidebar .nav-link {
+      color: #4b5563;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      color: #f9fafb !important;
+    }
+
+    .main-content {
+      padding: 1.5rem;
+    }
+
+    .main-content section {
+      margin-bottom: var(--section-margin);
+    }
+
+    .page-header {
+      border-bottom: 1px solid;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      transition: border-color 0.3s ease;
+    }
+
+    body.dark-theme .page-header {
+      border-color: #1f2937;
+    }
+
+    body.light-theme .page-header {
+      border-color: #e5e7eb;
+    }
+
+    .page-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .glass-card {
+      border-radius: 1.1rem;
+      border: 1px solid;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4);
+      padding: var(--card-padding);
+      margin-bottom: 1.25rem;
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-theme .glass-card {
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-color: rgba(148, 163, 184, 0.25);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
+    }
+
+    body.light-theme .glass-card {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title i {
+      color: var(--primary-color);
+    }
+
+    .policy-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    body.dark-theme .policy-label {
+      color: #9ca3af;
+    }
+
+    body.light-theme .policy-label {
+      color: #6b7280;
+    }
+
+    .pill-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 999px;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    body.dark-theme .pill-tag {
+      border-color: rgba(148, 163, 184, 0.4);
+      color: #9ca3af;
+    }
+
+    body.light-theme .pill-tag {
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #4b5563;
+      background: #ffffff;
+    }
+
+    .mini-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+    }
+
+    body.dark-theme .mini-badge {
+      background: rgba(31, 41, 55, 0.9);
+      color: #e5e7eb;
+    }
+
+    body.light-theme .mini-badge {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .raci-table th,
+    .raci-table td {
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    footer {
+      font-size: 0.75rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid;
+      transition: border-color 0.3s ease;
+    }
+
+    body.dark-theme footer {
+      color: #6b7280;
+      border-color: #1f2937;
+    }
+
+    body.light-theme footer {
+      color: #6b7280;
+      border-color: #e5e7eb;
+    }
+
+    body.tables-dense table td,
+    body.tables-dense table th {
+      padding: 0.25rem 0.45rem;
+      font-size: 0.75rem;
+    }
+
+    .sticky-top-custom {
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    #themeToggle {
+      transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    body.dark-theme #themeToggle {
+      border-color: #9ca3af;
+      color: #e5e7eb;
+    }
+
+    body.light-theme #themeToggle {
+      border-color: #4b5563;
+      color: #111827;
+      background-color: #ffffff;
+    }
+
+    .editable-section {
+      cursor: default;
+      position: relative;
+    }
+    .editable-section::after {
+      content: "Double-click to edit";
+      position: absolute;
+      right: 0.5rem;
+      top: 0.2rem;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+    .editable-section:hover::after {
+      opacity: 0.55;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        position: fixed;
+        z-index: 1040;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+      }
+    }
+  </style>
+
+  <!-- custom CSS injected by admin -->
+  <style id="customCssInjected"></style>
+</head>
+<body>
+<div class="d-flex">
+  <!-- SIDEBAR -->
+  <nav class="sidebar d-flex flex-column p-3">
+    <div class="mb-3">
+      <div class="d-flex align-items-center mb-2">
+        <img id="companyLogo" src="" alt="Logo" style="height:36px;width:auto;display:none;" class="me-2">
+        <div>
+          <div class="fw-semibold" id="companyName">Tasheer Company</div>
+          <small class="text-secondary" id="sidebarSubtitle">
+            SD-PL-003 DevOps Operating Model
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-secondary" />
+
+    <div class="mb-2 text-uppercase text-secondary" style="font-size:0.7rem;">Navigation</div>
+    <ul class="nav nav-pills flex-column mb-auto" id="sidebarNav">
+      <li class="nav-item"><a href="#intro" class="nav-link active"><i class="fa-solid fa-book-open me-2"></i> Introduction</a></li>
+      <li class="nav-item"><a href="#docControl" class="nav-link"><i class="fa-solid fa-file-contract me-2"></i> Document Control</a></li>
+      <li class="nav-item"><a href="#scopeObjectives" class="nav-link"><i class="fa-solid fa-bullseye me-2"></i> Scope & Objectives</a></li>
+      <li class="nav-item"><a href="#terms" class="nav-link"><i class="fa-solid fa-list-ul me-2"></i> Terms & Definitions</a></li>
+      <li class="nav-item"><a href="#provisions" class="nav-link"><i class="fa-solid fa-diagram-project me-2"></i> Policy Provisions</a></li>
+      <li class="nav-item"><a href="#roles" class="nav-link"><i class="fa-solid fa-users-gear me-2"></i> Roles & RACI</a></li>
+      <li class="nav-item"><a href="#enforcement" class="nav-link"><i class="fa-solid fa-gavel me-2"></i> Enforcement</a></li>
+      <li class="nav-item"><a href="#kpis" class="nav-link"><i class="fa-solid fa-chart-column me-2"></i> KPIs</a></li>
+      <li class="nav-item mt-2"><a href="#admin" class="nav-link"><i class="fa-solid fa-sliders me-2"></i> Admin</a></li>
+    </ul>
+
+    <hr class="border-secondary mt-3" />
+
+    <div class="small">
+      <div class="fw-semibold mb-1">Leadership</div>
+      <ul class="list-unstyled small mb-2">
+        <li><strong>D&T GM:</strong> Nasser Al Yousef</li>
+        <li><strong>Chief Enterprise Architect:</strong> Adel Abdelfattah Alfeky</li>
+        <li><strong>Business Operation Director:</strong> Abdulmohsen Saud Almutairi</li>
+        <li><strong>Executive Solution Delivery Director:</strong> Khaled Ahmad Abdullah</li>
+        <li><strong>Chief Solutions Architect:</strong> Khalid Abdulaziz Alghamdi</li>
+        <li><strong>Executive Infra &amp; Ops Director:</strong> Faisal Hassan Alhaiti</li>
+        <li><strong>Platforms Operation Manager:</strong> Mahmoud Abdulmohaymen Farhat</li>
+        <li><strong>Systems Engineering Manager:</strong> Emad Saudi Oqdi</li>
+      </ul>
+      <div class="policy-label mb-1">Quick Tags</div>
+      <div class="d-flex flex-wrap gap-1">
+        <span class="mini-badge">DevOps</span>
+        <span class="mini-badge">SDLC</span>
+        <span class="mini-badge">Release</span>
+        <span class="mini-badge">Azure DevOps</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow-1 main-content">
+    <!-- Mobile toggle -->
+    <div class="d-lg-none sticky-top-custom mb-2">
+      <button id="menuToggle" class="btn btn-outline-light btn-sm mb-2">
+        <i class="fa-solid fa-bars me-1"></i> Menu
+      </button>
+    </div>
+
+    <!-- Header -->
+    <header class="page-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <img id="headerLogo" src="" alt="" style="height:40px;width:auto;display:none;">
+        <div>
+          <h1 class="mb-1" id="headerTitle">SD-PL-003 DevOps Operating Model</h1>
+          <div class="policy-label" id="headerSubLabel">
+            DevOps · SDLC · Release · Azure DevOps
+          </div>
+        </div>
+      </div>
+      <div class="text-end">
+        <button id="themeToggle" class="btn btn-sm btn-outline-light">
+          <i class="fa-solid fa-sun me-1"></i> Light
+        </button>
+        <div class="mt-1">
+          <span class="pill-tag" id="versionTag">
+            <i class="fa-solid fa-rocket me-1"></i> Version 1.0
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1 INTRO / PURPOSE -->
+    <section id="intro" class="editable-section" data-section-title="Introduction & Purpose">
+      <div class="editable-content">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="section-title">
+            <i class="fa-solid fa-book-open"></i> 1. Introduction & Purpose
+          </div>
+          <span class="pill-tag">Policy SD-PL-003</span>
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">1.1 Introduction</div>
+          <p class="mb-2">
+            The DevOps Operating Model Policy establishes a unified, integrated, and authoritative
+            enterprise framework governing all technology development, deployment, operational and
+            release-related activities across Tasheer Company. :contentReference[oaicite:1]{index=1}
+          </p>
+          <p class="mb-2">
+            It covers all DevOps collaboration and operating interactions between:
+          </p>
+          <ul class="mb-2">
+            <li>Platforms Operations</li>
+            <li>Solutions Delivery</li>
+            <li>Infrastructure &amp; Operations</li>
+          </ul>
+
+          <p class="mb-2">
+            This policy defines how work is planned, built, tested, released, secured, operated,
+            monitored, and continuously improved using <strong>Azure DevOps</strong> as the mandated
+            enterprise platform and single source of truth.
+          </p>
+
+          <div class="policy-label mb-1 mt-3">1.2 Purpose</div>
+          <p class="mb-2">
+            The purpose of this policy is to replace isolated practices by enforcing one consistent
+            umbrella DevOps Operating Model that covers:
+          </p>
+          <ul class="mb-0">
+            <li>DevOps practices and culture.</li>
+            <li>SDLC governance and lifecycle management.</li>
+            <li>Agile execution (Epics, Features, User Stories, Tasks, Sprints).</li>
+            <li>Release &amp; deployment management.</li>
+            <li>Cloud infrastructure readiness &amp; Infrastructure as Code (IaC).</li>
+            <li>Operational support and Site Reliability Engineering (SRE).</li>
+            <li>Governance, Risk &amp; Compliance (GRC) integration and evidence.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 DOCUMENT CONTROL & DIGITAL APPROVAL -->
+    <section id="docControl" class="editable-section" data-section-title="Document Control & Digital Approval">
+      <div class="editable-content">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="section-title">
+            <i class="fa-solid fa-file-contract"></i> Document Control & Digital Approval
+          </div>
+          <span class="pill-tag">Owner: D&amp;T GM</span>
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">Core Metadata</div>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <tbody>
+              <tr><th style="width:220px;">Document Name</th><td>SD-PL-003 DevOps Operating Model</td></tr>
+              <tr><th>Version Number</th><td>V 1.0</td></tr>
+              <tr><th>Owner</th><td>Nasser Al Yousef</td></tr>
+              <tr><th>Owner Title</th><td>Digitalization &amp; Technology GM</td></tr>
+              <tr><th>Effective Date</th><td>14-07-2025</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="policy-label mb-1 mt-3">Document Control</div>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+              <tr>
+                <th>Document Name</th><th>Version</th><th>Issue / Rev. Date</th>
+                <th>Author</th><th>Owner</th><th>Custodian</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>DevOps Operating Model</td>
+                <td>V1.0</td>
+                <td>14-07-2025</td>
+                <td>Eng. Adel AlFeky</td>
+                <td>Eng. Nasser AlYousef</td>
+                <td>Enterprise Architecture (EA)</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="policy-label mb-1 mt-3">Document History</div>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <thead><tr><th>Date</th><th>Revision</th><th>Comments</th></tr></thead>
+              <tbody>
+              <tr>
+                <td>03-12-2025</td>
+                <td>1.0</td>
+                <td>Update as per the requirements of the running activities.</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <div class="policy-label mb-1 mt-2">Prepared By</div>
+              <div class="table-responsive mb-3">
+                <table class="table table-sm align-middle mb-0">
+                  <thead><tr><th>Name</th><th>Title</th><th>Date</th></tr></thead>
+                  <tbody>
+                  <tr>
+                    <td>Adel Alfeky</td>
+                    <td>Chief Enterprise Architect</td>
+                    <td>03-12-2025</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="policy-label mb-1">Reviewed By</div>
+              <div class="table-responsive mb-3">
+                <table class="table table-sm align-middle mb-0">
+                  <thead><tr><th>Name</th><th>Title</th></tr></thead>
+                  <tbody>
+                  <tr><td>Khaled Ahmad Abdullah</td><td>Solutions Delivery Director</td></tr>
+                  <tr><td>Abdulmohsen Almutairi</td><td>Business Operation Director</td></tr>
+                  <tr><td>Faisal Alhaiti</td><td>Infrastructure Operation Director</td></tr>
+                  <tr><td>Nasser AlYousef</td><td>D&amp;T General Manager</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="policy-label mb-1 mt-2">Endorsed &amp; Approved</div>
+              <div class="table-responsive mb-3">
+                <table class="table table-sm align-middle mb-0">
+                  <thead><tr><th>Category</th><th>Name</th><th>Title</th></tr></thead>
+                  <tbody>
+                  <tr><td>Endorsed By</td><td>TIC-GRC</td><td>Governance, Risk &amp; Compliance</td></tr>
+                  <tr><td>Approved By</td><td>Ahmad Al-solaim</td><td>Member of the Board</td></tr>
+                  <tr><td>Approved By</td><td>Abdulrahman Al-sughayer</td><td>Member of the Board</td></tr>
+                  <tr><td>Approved By</td><td>Nabil Al-Omar</td><td>Chairman of the Board</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="policy-label mb-1">Distribution / Target Audience</div>
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                  <thead><tr><th>Audience</th></tr></thead>
+                  <tbody><tr><td>All Departments</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIGITAL APPROVAL PANEL -->
+        <div class="glass-card">
+          <div class="policy-label mb-1">Digital Approval Panel (local only)</div>
+          <p class="small mb-2">
+            Each stakeholder can mark the policy as digitally approved. Status is stored only in
+            your browser via <code>localStorage</code> and is not a legal signature.
+          </p>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+              <tr><th>Stakeholder</th><th>Role</th><th>Status</th><th style="width:140px;">Action</th></tr>
+              </thead>
+              <tbody id="digitalApprovalBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3–6 SCOPE, OBJECTIVES, RESULTS -->
+    <section id="scopeObjectives" class="editable-section" data-section-title="Scope, Objectives & Results">
+      <div class="editable-content">
+        <div class="section-title">
+          <i class="fa-solid fa-bullseye"></i> 3–6. Policy Owner, Scope, Objectives & Results
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">3. Policy Owner &amp; Governance</div>
+          <p class="mb-2">
+            The policy owner is responsible for ensuring that this policy is up to date, communicated
+            and enforced across all relevant stakeholders.
+          </p>
+          <ul class="mb-2">
+            <li><strong>3.1 Policy Owner:</strong> Digitalization &amp; Technology GM.</li>
+            <li><strong>3.2 Policy Custodian:</strong> Chief Enterprise Architect.</li>
+          </ul>
+
+          <div class="policy-label mb-1 mt-3">3.3 Organizational Structure Reflected in This Policy</div>
+          <ul class="mb-2">
+            <li><strong>Overall Supervision (Sponsor):</strong> Nasser Al Yousef — D&amp;T GM (Executive).</li>
+            <li><strong>Platforms Operations:</strong> Abdulmohsen Saud Almutairi — Business Operations Director (Executive); Mahmoud Abdulmohaymen Farhat — Platforms Operation Manager (Technical).</li>
+            <li><strong>Solutions Delivery:</strong> Khaled Ahmad Abdullah — Executive Solution Delivery Director (Executive); Khalid Abdulaziz Alghamdi — Chief Solutions Architect (Technical).</li>
+            <li><strong>Infrastructure &amp; Operations:</strong> Faisal Hassan Alhaiti — Executive Infrastructure &amp; Operations Director (Executive); Emad Saudi Oqdi — Systems Engineering Manager (Technical).</li>
+            <li><strong>Policy Governance:</strong> Adel Abdelfattah Alfeky — Chief Enterprise Architect (Governance).</li>
+          </ul>
+
+          <div class="policy-label mb-1 mt-3">4. Policy Scope</div>
+          <p class="mb-2">
+            This policy applies to all employees, contractors and third-party vendors involved in
+            software development and IT operations of all business solutions and applications
+            (Tasheer Products).
+          </p>
+          <p class="mb-2">It applies to:</p>
+          <ul class="mb-2">
+            <li>Digital products, enhancements, change requests and incidents.</li>
+            <li>Departments: Business Operations, Solutions Delivery, Infrastructure &amp; Operations.</li>
+            <li>Contractors, vendors and third-party teams working on Tasheer systems.</li>
+            <li>All use of Azure DevOps Boards, Repos, Pipelines, Test Plans and Dashboards.</li>
+            <li>On-premises, cloud, hybrid and integrated systems.</li>
+            <li>CI/CD pipelines, IaC configurations and cloud deployments.</li>
+          </ul>
+          <p class="mb-2">The policy covers the full value chain:</p>
+          <p class="mb-2">
+            <strong>Epic → Feature → User Story → Tasks → CI/CD → Release → Operate → Optimize</strong>
+          </p>
+
+          <div class="policy-label mb-1 mt-3">5. Policy Objectives</div>
+          <ul class="mb-2">
+            <li>Establish a unified DevOps Operating Model across all departments.</li>
+            <li>Standardize planning, development, testing, release and operational processes.</li>
+            <li>Enforce mandatory usage of Azure DevOps for all work and traceability.</li>
+            <li>Enable automation-first, cloud-ready, secure-by-design delivery.</li>
+            <li>Ensure full traceability and compliance with internal GRC requirements.</li>
+            <li>Integrate SDLC, DevOps and Release activities under a single umbrella.</li>
+            <li>Define clear roles, responsibilities and governance touchpoints.</li>
+            <li>Enable predictive monitoring, proactive incident prevention and continuous improvement.</li>
+          </ul>
+
+          <div class="policy-label mb-1 mt-3">6. Main Results from Implementation</div>
+          <p class="mb-2">Successful implementation is expected to deliver:</p>
+          <ul class="mb-2">
+            <li>Increased deployment frequency with reliable, repeatable releases.</li>
+            <li>Reduced lead time from code commit to production deployment.</li>
+            <li>Improved change failure rate via automated testing and quality gates.</li>
+            <li>Enhanced MTTR through automated monitoring and issue detection.</li>
+            <li>Strong auditability and compliance via clear change traceability.</li>
+          </ul>
+          <p class="mb-2">The following measurable outcomes MUST be achieved:</p>
+          <ul class="mb-0">
+            <li>100% of DevOps work recorded and traceable in Azure DevOps.</li>
+            <li>100% CI/CD adoption for supported applications.</li>
+            <li>Automated security scanning integrated into pipelines.</li>
+            <li>Standardized release cycles with full governance.</li>
+            <li>Predictive (AI-based) monitoring across environments.</li>
+            <li>Clear sprint delivery transparency and reporting.</li>
+            <li>Unified reporting dashboards available to leadership.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 TERMS -->
+    <section id="terms" class="editable-section" data-section-title="Terms & Abbreviations">
+      <div class="editable-content">
+        <div class="section-title">
+          <i class="fa-solid fa-list-ul"></i> 2. Terms and Abbreviations / Definitions
+        </div>
+        <div class="glass-card">
+          <p class="mb-2">
+            Understanding key terms is essential for the consistent application of this policy.
+            The following terms and abbreviations are used throughout this document.
+          </p>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+              <tbody>
+              <tr><td>DevOps</td><td>Methodology combining software development and IT operations to shorten the lifecycle and provide continuous delivery with high quality.</td></tr>
+              <tr><td>CI/CD</td><td>Continuous Integration / Continuous Delivery – frequent integration and automated delivery to production.</td></tr>
+              <tr><td>Continuous Integration</td><td>Automatically testing and integrating code in a shared repository frequently.</td></tr>
+              <tr><td>Continuous Delivery</td><td>Automating delivery of code into environments so it is always ready for deployment.</td></tr>
+              <tr><td>Infrastructure as Code (IaC)</td><td>Managing and provisioning infrastructure through code instead of manual processes (e.g., Terraform, Bicep, ARM).</td></tr>
+              <tr><td>Automation</td><td>Use of technology to perform tasks with minimal human intervention.</td></tr>
+              <tr><td>GitOps</td><td>Using Git as the source of truth for declarative infrastructure and application management.</td></tr>
+              <tr><td>Shift-Left Security</td><td>Integrating security practices earlier in the development lifecycle.</td></tr>
+              <tr><td>Epic</td><td>Large body of work requiring multiple Features and Sprints.</td></tr>
+              <tr><td>Feature</td><td>Component of an Epic providing a business capability.</td></tr>
+              <tr><td>User Story</td><td>Granular requirement representing a unit of customer or technical value.</td></tr>
+              <tr><td>Task</td><td>Technical activity required to complete a User Story.</td></tr>
+              <tr><td>CI/CD Pipelines</td><td>Automated build, test and deployment pipelines in Azure DevOps.</td></tr>
+              <tr><td>Scrum Master</td><td>Role responsible for flow, governance, impediment resolution and sprint execution quality.</td></tr>
+              <tr><td>SRE</td><td>Site Reliability Engineering practices for reliability and automation.</td></tr>
+              <tr><td>Release</td><td>Packaged set of tested changes deployed to production.</td></tr>
+              <tr><td>DoR / DoD</td><td>Definition of Ready / Definition of Done – quality gates for starting and closing work.</td></tr>
+              <tr><td>Azure DevOps</td><td>Tasheer’s mandatory platform for planning, coding, testing, automation and reporting.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7–9 ENFORCEMENT & RELEVANT POLICIES + PROVISIONS + DETAILED STEPS -->
+    <section id="provisions" class="editable-section" data-section-title="Policy Provisions & Detailed Steps">
+      <div class="editable-content">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="section-title">
+            <i class="fa-solid fa-diagram-project"></i> 7–9. Enforcement, Relevant Policies & Provisions
+          </div>
+          <span class="pill-tag">Epic → Release → Operate</span>
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">7. Policy Enforcement and Compliance</div>
+          <p class="mb-2">
+            Compliance with this policy is mandatory. The following subsections describe how it is
+            enforced across Tasheer.
+          </p>
+          <p class="mb-1"><strong>7.1 Policy Dissemination and Awareness</strong></p>
+          <p class="mb-2">
+            The policy will be made accessible to all relevant personnel. Mandatory training will
+            be conducted to familiarize teams with DevOps principles, tools and practices.
+          </p>
+          <p class="mb-1"><strong>7.2 Process Implementation and Tooling</strong></p>
+          <p class="mb-2">
+            All teams must use approved tools (primarily Azure DevOps and integrated platforms) to
+            automate and manage the software delivery pipeline.
+          </p>
+          <p class="mb-1"><strong>7.3 Compliance Monitoring and Reporting</strong></p>
+          <p class="mb-2">
+            Continuous monitoring metrics and KPIs will be used to assess effectiveness and
+            adherence. Regular audits will verify that practices align with this policy.
+          </p>
+          <p class="mb-1"><strong>7.4 Non-Compliance and Enforcement</strong></p>
+          <p class="mb-2">
+            Non-compliance may result in corrective actions including re-training, workflow
+            adjustments, process modifications and escalation.
+          </p>
+          <p class="mb-1"><strong>7.5 Policy Review and Update</strong></p>
+          <p class="mb-2">
+            The policy will be reviewed at least annually, or when major technology, process or
+            organizational changes occur.
+          </p>
+
+          <div class="policy-label mb-1 mt-3">8. Relevant Policies and Documents</div>
+          <p class="mb-2">
+            This DevOps Operating Model is the master <strong>umbrella policy</strong>, superseding
+            fragmented practices and integrating the following:
+          </p>
+          <ul class="mb-0">
+            <li>SD-PL-001 SDLC Management Policy</li>
+            <li>SD-PL-003 DevOps Management Policy (legacy)</li>
+            <li>SD-PL-006 Release Management Policy</li>
+            <li>Deploy Management Policy</li>
+            <li>Change &amp; Configuration Management Policy</li>
+          </ul>
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">9. Policy Provisions (High Level)</div>
+          <p class="mb-2">
+            The umbrella DevOps policy consists of a set of high-level provisions implemented using
+            Azure DevOps and related tooling:
+          </p>
+          <p class="mb-1"><strong>CI/CD Pipeline</strong></p>
+          <ul class="mb-2">
+            <li>All code must be managed in an approved Version Control System (e.g., Git in Azure DevOps Repos).</li>
+            <li>Automated pipelines are mandatory for new applications and major updates.</li>
+            <li>Pipelines must include automated builds, unit tests and integration tests.</li>
+          </ul>
+          <p class="mb-1"><strong>Automation</strong></p>
+          <ul class="mb-2">
+            <li>Infrastructure provisioning and configuration should be managed through IaC where applicable and as much as possible.</li>
+            <li>Manual deployments to production are prohibited except for pre-approved emergency changes.</li>
+          </ul>
+          <p class="mb-1"><strong>Collaboration and Communication</strong></p>
+          <ul class="mb-2">
+            <li>Continuous collaboration between development, operations and security is mandatory.</li>
+            <li>Shared tools and dashboards must be used to monitor application and infrastructure health.</li>
+          </ul>
+          <p class="mb-1"><strong>Security Integration (“Shift-Left”)</strong></p>
+          <ul class="mb-2">
+            <li>Security controls must be integrated early into the CI/CD pipeline (code scanning, dependency checks, etc.).</li>
+          </ul>
+          <p class="mb-1"><strong>Monitoring and Feedback</strong></p>
+          <ul class="mb-2">
+            <li>Continuous monitoring of production systems must track performance, availability and security.</li>
+            <li>Alerts for critical issues should be auto-generated and routed to relevant teams.</li>
+          </ul>
+          <p class="mb-1"><strong>Release Management</strong></p>
+          <ul class="mb-2">
+            <li>All deployments must follow an automated, traceable and repeatable process.</li>
+            <li>Change Management procedures must be followed for all production releases.</li>
+          </ul>
+
+          <div class="policy-label mb-1 mt-3">
+            Detailed Procedure Steps (aligned with SD-PL-001 SDLC Policy style)
+          </div>
+          <p class="mb-2">
+            End-to-end work is executed as a lifecycle, managed and traced in Azure DevOps:
+          </p>
+          <ol class="mb-0">
+            <li><strong>Initiation:</strong> Epic created, reviewed and approved.</li>
+            <li><strong>Analysis:</strong> Requirements, dependencies and design decisions documented.</li>
+            <li><strong>Design:</strong> Architecture, cloud design review and interface definition.</li>
+            <li><strong>Sprint Planning:</strong> Capacity, dependencies and prioritization finalized.</li>
+            <li><strong>Development:</strong> Coding, PR reviews, security scans and unit tests.</li>
+            <li><strong>Testing:</strong> Functional, security, integration and performance test cycles.</li>
+            <li><strong>Release Approval:</strong> Governance gates and sign-offs in line with Release Policy.</li>
+            <li><strong>Deployment:</strong> Automated CI/CD deployment into environments.</li>
+            <li><strong>Validation:</strong> Smoke tests and monitoring checks.</li>
+            <li><strong>Operations:</strong> SRE practices, monitoring and incident handling.</li>
+            <li><strong>Continuous Improvement:</strong> Lessons learned, technical debt and backlog updates.</li>
+            <li><strong>Archiving &amp; Documentation:</strong> Evidence stored in Azure DevOps for audit.</li>
+          </ol>
+        </div>
+
+        <!-- 12 detailed provisions -->
+        <div class="glass-card">
+          <div class="policy-label mb-1">Umbrella DevOps Provisions (1–12)</div>
+
+          <h6 class="mt-2">Provision 1: Work Intake &amp; Demand Management</h6>
+          <ul>
+            <li>All demands MUST enter Azure DevOps as Epics.</li>
+            <li>Business, Architecture or Technical teams may raise Epics.</li>
+            <li>Enterprise Architecture reviews Epics for feasibility and architecture alignment.</li>
+            <li>Department Directors approve prioritization.</li>
+          </ul>
+
+          <h6>Provision 2: Epic &amp; Feature Breakdown</h6>
+          <ul>
+            <li>Each Epic MUST be decomposed into Features before planning.</li>
+            <li>Features MUST include cross-team dependencies (Dev, Ops, Infra).</li>
+            <li>Scrum Master ensures readiness before sprint planning (DoR met).</li>
+            <li>All Features MUST contain clear acceptance criteria.</li>
+          </ul>
+
+          <h6>Provision 3: Backlog Management</h6>
+          <ul>
+            <li>User Stories MUST follow INVEST criteria.</li>
+            <li>Work MUST map: Epic → Feature → User Story → Tasks.</li>
+            <li>No work may be performed outside an approved Azure DevOps Work Item.</li>
+            <li>Scrum Master ensures regular backlog refinement sessions.</li>
+          </ul>
+
+          <h6>Provision 4: Sprint Planning &amp; Capacity Management</h6>
+          <ul>
+            <li>Default sprint duration is two weeks unless formally approved otherwise.</li>
+            <li>Scrum Master leads planning and ensures realistic commitments.</li>
+            <li>Dependencies MUST be identified and resolved before sprint finalization.</li>
+            <li>Capacity MUST reflect Dev, QA, Infra and Ops availability.</li>
+          </ul>
+
+          <h6>Provision 5: Development Standards</h6>
+          <ul>
+            <li>All development MUST occur in Azure DevOps Repos or integrated Git repositories.</li>
+            <li>Mandatory branch policies: pull requests, reviewers and CI checks.</li>
+            <li>SAST/DAST scans MUST pass before merging into main branches.</li>
+            <li>Code MUST NOT bypass CI pipelines.</li>
+          </ul>
+
+          <h6>Provision 6: Testing Standards</h6>
+          <ul>
+            <li>Test cases and suites MUST be stored in Azure DevOps Test Plans.</li>
+            <li>Automated tests MUST cover regression and critical paths.</li>
+            <li>Bug workflow MUST follow defined Azure DevOps states.</li>
+            <li>Scrum Master ensures QA readiness before release.</li>
+          </ul>
+
+          <h6>Provision 7: CI/CD &amp; Automation</h6>
+          <ul>
+            <li>All builds MUST be automated through CI pipelines.</li>
+            <li>Deployments MUST use Azure DevOps Pipelines.</li>
+            <li>Rollback plans MUST exist and be tested for every release.</li>
+            <li>Secrets MUST be stored in secure stores (e.g., Azure Key Vault).</li>
+          </ul>
+
+          <h6>Provision 8: Release Management</h6>
+          <ul>
+            <li>All releases MUST comply with SD-PL-006 Release Management Policy.</li>
+            <li>Manual deployments are prohibited except approved emergencies.</li>
+            <li>Release approvals MUST include Dev, QA, Ops and Infra representatives.</li>
+            <li>Post-release validation MUST be documented in Azure DevOps.</li>
+          </ul>
+
+          <h6>Provision 9: Infrastructure Readiness &amp; IaC</h6>
+          <ul>
+            <li>Infrastructure &amp; Operations MUST build environments using IaC where possible.</li>
+            <li>Cloud readiness assessments MUST precede deployment.</li>
+            <li>Monitoring, logging and alerting MUST be configured before go-live.</li>
+            <li>SRE error budgets MUST guide release frequency and risk decisions.</li>
+          </ul>
+
+          <h6>Provision 10: Incident, Problem &amp; SRE Governance</h6>
+          <ul>
+            <li>All incidents MUST be recorded in Azure DevOps or integrated ITSM.</li>
+            <li>MTTA and MTTR MUST be tracked and reported at least weekly.</li>
+            <li>Root Cause Analysis for critical incidents MUST be completed within 48 hours.</li>
+            <li>Recurring issues MUST feed the backlog as Features or User Stories.</li>
+          </ul>
+
+          <h6>Provision 11: Reporting &amp; KPIs</h6>
+          <ul>
+            <li>Leadership dashboards MUST be updated automatically from Azure DevOps.</li>
+            <li>Mandatory KPIs: Deployment Frequency, Lead Time for Changes, MTTR, Change Failure Rate, Sprint Predictability.</li>
+            <li>Scrum Master MUST publish a weekly sprint report summarizing status and risks.</li>
+          </ul>
+
+          <h6>Provision 12: Compliance &amp; Quality Gates</h6>
+          <ul class="mb-0">
+            <li>Architecture review MUST occur before development for significant Epics/Features.</li>
+            <li>DoR/DoD MUST be applied for all User Stories.</li>
+            <li>Change approvals MUST comply with Release and Change Management Policies.</li>
+            <li>Evidence MUST be stored in Azure DevOps for audit and GRC purposes.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 ROLES & RACI -->
+    <section id="roles" class="editable-section" data-section-title="Roles, Responsibilities & RACI">
+      <div class="editable-content">
+        <div class="section-title">
+          <i class="fa-solid fa-users-gear"></i> 10. Roles, Responsibilities & RACI Matrix
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">Key Roles</div>
+          <p class="mb-2">
+            The following roles are essential for successful implementation of DevOps practices and
+            compliance with this policy.
+          </p>
+          <ul class="mb-2">
+            <li><strong>Digitalization &amp; Technology GM:</strong> Final authority over DevOps delivery and governance.</li>
+            <li><strong>Chief Enterprise Architect:</strong> Ensures architecture alignment and overall compliance.</li>
+            <li><strong>Executive Platform Director / Platforms Operation Manager:</strong> Owns environmental readiness, operations, monitoring and stability.</li>
+            <li><strong>Executive Solution Delivery Director:</strong> Owns solution delivery, testing and development outcomes.</li>
+            <li><strong>Executive Infra &amp; Ops Director:</strong> Owns infra readiness and operations across environments.</li>
+            <li><strong>Platforms Operation Manager:</strong> Ensures application operations, SRE practices and platform governance.</li>
+            <li><strong>Chief Solutions Architect:</strong> Ensures architectural integrity across Features and Stories.</li>
+            <li><strong>Systems Engineering Manager:</strong> Ensures cloud, network and infra readiness (IaC and monitoring).</li>
+            <li><strong>DevOps Engineer:</strong> Designs, implements and maintains CI/CD pipelines.</li>
+            <li><strong>Software Developer:</strong> Develops code, integrates into CI, resolves code issues, conducts reviews and contributes automated tests.</li>
+            <li><strong>QA Team:</strong> Ensures testing completeness and overall quality assurance.</li>
+            <li><strong>IT Operations Engineer / Operations Team:</strong> Manages production environments, deployments, monitoring and incident handling.</li>
+            <li><strong>Scrum Master:</strong> 
+              Ensures all work is tracked in Azure DevOps; leads refinement, planning, daily scrums and sprint reviews; 
+              enforces workflow, DoR/DoD, testing standards and CI/CD gates; removes cross-team blockers; 
+              publishes weekly governance reports; enforces compliance with DevOps, SDLC and Release policies.
+            </li>
+          </ul>
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">RACI Matrix (Condensed Example)</div>
+          <p class="mb-2">
+            R = Responsible, A = Accountable, C = Consulted, I = Informed.
+            The full detailed table follows the SDLC policy structure and can be extended as needed.
+          </p>
+          <div class="table-responsive raci-table">
+            <table class="table table-sm table-dark table-bordered align-middle mb-0">
+              <thead>
+              <tr>
+                <th>Activity</th>
+                <th>PO</th><th>SM</th><th>Dev</th><th>QA</th>
+                <th>Ops</th><th>Infra</th><th>Arch</th><th>EA</th><th>Director</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Epic Approval</td>
+                <td>C</td><td>R</td><td>C</td><td>—</td>
+                <td>C</td><td>C</td><td>R</td><td>A</td><td>A</td>
+              </tr>
+              <tr>
+                <td>Sprint Execution</td>
+                <td>C</td><td>A</td><td>R</td><td>R</td>
+                <td>C</td><td>C</td><td>C</td><td>—</td><td>—</td>
+              </tr>
+              <tr>
+                <td>Release Approval</td>
+                <td>C</td><td>R</td><td>R</td><td>R</td>
+                <td>A</td><td>A</td><td>C</td><td>C</td><td>A</td>
+              </tr>
+              <tr>
+                <td>Compliance Reporting</td>
+                <td>—</td><td>R</td><td>—</td><td>—</td>
+                <td>—</td><td>—</td><td>C</td><td>A</td><td>A</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 ENFORCEMENT & EXCEPTION (SHORT) -->
+    <section id="enforcement" class="editable-section" data-section-title="Enforcement & Policy Exception">
+      <div class="editable-content">
+        <div class="section-title">
+          <i class="fa-solid fa-gavel"></i> 11. Enforcement & Policy Exception
+        </div>
+
+        <div class="glass-card">
+          <div class="policy-label mb-1">Enforcement</div>
+          <p class="mb-2">
+            Non-compliance with this policy results in concrete actions, including but not limited to:
+          </p>
+          <ul class="mb-2">
+            <li>Rejected deployments and blocked pull requests.</li>
+            <li>Audit findings and formal corrective action plans.</li>
+            <li>Escalation to Digitalization &amp; Technology GM.</li>
+          </ul>
+
+          <div class="policy-label mb-1 mt-3">Policy Exception</div>
+          <p class="mb-2">
+            Exceptions to this DevOps Operating Model may be granted only where strict adherence
+            would impede critical business operations.
+          </p>
+          <ul class="mb-0">
+            <li>Every exception MUST be documented and justified.</li>
+            <li>Exceptions MUST be approved by the Chief Enterprise Architect.</li>
+            <li>Exceptions MUST be recorded in the Azure DevOps Exception Register.</li>
+            <li>Exceptions MUST be time-bound and periodically reviewed.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI DEMO -->
+    <section id="kpis" class="editable-section" data-section-title="KPIs, Dashboards & Outcomes">
+      <div class="editable-content">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="section-title">
+            <i class="fa-solid fa-chart-column"></i> KPIs, Dashboards & Outcomes
+          </div>
+          <span class="pill-tag">DORA · SRE · GRC</span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="glass-card">
+              <div class="policy-label mb-1">DevOps Performance Indicators</div>
+              <ul class="mb-2">
+                <li>Deployment frequency (per system / per month).</li>
+                <li>Lead time for changes (commit → production).</li>
+                <li>Change failure rate (% of releases causing incidents).</li>
+                <li>Mean Time to Recovery (MTTR).</li>
+                <li>SLO / SLA compliance percentage.</li>
+                <li>Sprint predictability and delivery rate.</li>
+              </ul>
+              <p class="small mb-0">
+                Azure DevOps dashboards MUST surface these KPIs and act as the primary reporting
+                mechanism to management and auditors.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="glass-card">
+              <div class="policy-label mb-1">Sample KPI Bar Chart (Demo)</div>
+              <canvas id="kpiChartCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="section-title">
+          <i class="fa-solid fa-sliders"></i> Admin & Styling Controls
+        </div>
+        <span class="pill-tag">Local-only Customization</span>
+      </div>
+
+      <div class="row g-3">
+        <!-- Branding -->
+        <div class="col-lg-4">
+          <div class="glass-card">
+            <div class="policy-label mb-1">Branding & Titles</div>
+            <div class="small">
+              <div class="mb-2">
+                <label class="form-label">Company Name</label>
+                <input type="text" id="adminCompanyName" class="form-control form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Sidebar Subtitle</label>
+                <input type="text" id="adminSidebarSubtitle" class="form-control form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Header Title</label>
+                <input type="text" id="adminHeaderTitle" class="form-control form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Header Sub-Label</label>
+                <input type="text" id="adminHeaderSubLabel" class="form-control form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Version Tag Text</label>
+                <input type="text" id="adminVersionTag" class="form-control form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Company Logo</label>
+                <input type="file" id="adminLogoUpload" class="form-control form-control-sm" accept="image/*">
+                <div class="form-text small">
+                  Logo is stored locally in your browser and appears in sidebar & header.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="col-lg-4">
+          <div class="glass-card">
+            <div class="policy-label mb-1">Typography & Spacing</div>
+            <div class="small">
+              <div class="mb-2">
+                <label class="form-label">Font Family</label>
+                <select id="adminFontFamily" class="form-select form-select-sm">
+                  <option value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">System UI</option>
+                  <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                  <option value="Arial, Helvetica, sans-serif">Arial</option>
+                  <option value="'Roboto', system-ui, sans-serif">Roboto</option>
+                  <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                  <option value="'Cairo', system-ui, sans-serif">Cairo (Arabic friendly)</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Base Font Size (<span id="fontSizeValue">16</span>px)</label>
+                <input type="range" id="adminFontSize" class="form-range" min="12" max="20" step="1">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Line Height (<span id="lineHeightValue">1.5</span>)</label>
+                <input type="range" id="adminLineHeight" class="form-range" min="1.2" max="1.8" step="0.05">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Card Padding (<span id="cardPaddingValue">1.1</span>rem)</label>
+                <input type="range" id="adminCardPadding" class="form-range" min="0.6" max="2" step="0.1">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Section Spacing (<span id="sectionMarginValue">1.5</span>rem)</label>
+                <input type="range" id="adminSectionMargin" class="form-range" min="0.8" max="3" step="0.1">
+              </div>
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="adminDenseTables">
+                <label class="form-check-label" for="adminDenseTables">Compact tables (dense)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colors, password, layout -->
+        <div class="col-lg-4">
+          <div class="glass-card mb-3">
+            <div class="policy-label mb-1">Color Palette & Theme</div>
+            <div class="small">
+              <div class="mb-2">
+                <label class="form-label">Primary Color</label>
+                <input type="color" id="adminPrimaryColor" class="form-control form-control-color form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Accent Color</label>
+                <input type="color" id="adminAccentColor" class="form-control form-control-color form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Highlight Color</label>
+                <input type="color" id="adminHighlightColor" class="form-control form-control-color form-control-sm">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Default Theme</label>
+                <select id="adminDefaultTheme" class="form-select form-select-sm">
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card mb-3">
+            <div class="policy-label mb-1">Admin Password</div>
+            <div class="small">
+              <div class="mb-2">
+                <label class="form-label">Edit Password</label>
+                <input type="password" id="adminPassword" class="form-control form-control-sm">
+                <div class="form-text small">
+                  Used when double-clicking a section to edit.<br>
+                  Default: <code>devops@2025</code>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card mb-3">
+            <div class="policy-label mb-1">Layout & Order</div>
+            <div class="small">
+              <p class="mb-2">Open the layout editor to reorder which sections appear first.</p>
+              <button id="openLayoutEditor" class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-up-down-left-right me-1"></i> Open Layout Editor
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="policy-label mb-1">Custom CSS (Advanced)</div>
+            <div class="small mb-2">
+              <textarea id="adminCustomCss" class="form-control form-control-sm" rows="4"
+                        placeholder="Example: .glass-card { border-radius: 2rem; }"></textarea>
+            </div>
+            <div class="small d-flex gap-2">
+              <button id="adminResetConfig" class="btn btn-outline-warning btn-sm">
+                <i class="fa-solid fa-rotate-left me-1"></i> Reset to Defaults
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="policy-label mb-1">How This Admin Panel Works</div>
+        <p class="small mb-0">
+          All changes are applied instantly and stored locally in your browser using
+          <strong>localStorage</strong>. They do not affect other users. Double-click any main
+          section to open a password-protected editor for the content (WYSIWYG style).
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      SD-PL-003 DevOps Operating Model – interactive HTML dashboard version, generated from the
+      official policy text and aligned with SDLC / Release umbrella governance.
+    </footer>
+  </main>
+</div>
+
+<!-- SECTION EDIT MODAL -->
+<div class="modal fade" id="sectionEditModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sectionEditTitle">Edit Section</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted mb-2">
+          You are editing the visible content of this section (no HTML needed). Changes are stored
+          locally in your browser only.
+        </p>
+        <div id="sectionEditEditor"
+             class="form-control"
+             contenteditable="true"
+             style="min-height:420px;font-size:0.9rem;line-height:1.5;white-space:pre-wrap;overflow-y:auto;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="sectionEditSaveBtn">
+          <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT EDITOR MODAL -->
+<div class="modal fade" id="layoutModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Layout & Section Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted">
+          Drag and drop to change the order of main sections. The sidebar navigation will follow
+          the same order.
+        </p>
+        <ul id="sectionOrderList" class="list-group small"></ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="saveLayoutBtn">
+          <i class="fa-solid fa-floppy-disk me-1"></i> Save Layout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // ---- basic helpers ----
+  const CONFIG_KEY = "devopsUmbrellaAdminConfigV3";
+  const SECTION_ORDER_KEY = "devopsUmbrellaSectionOrder";
+  const SECTION_CONTENT_PREFIX = "devopsSection_";
+  const DIGITAL_APPROVAL_KEY = "devopsUmbrellaDigitalApprovalV1";
+
+  const defaultConfig = {
+    companyName: "Tasheer Company",
+    sidebarSubtitle: "SD-PL-003 DevOps Operating Model",
+    headerTitle: "SD-PL-003 DevOps Operating Model",
+    headerSubLabel: "DevOps · SDLC · Release · Azure DevOps",
+    versionTag: "Version 1.0",
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    fontSize: 16,
+    lineHeight: 1.5,
+    cardPadding: 1.1,
+    sectionMargin: 1.5,
+    denseTables: false,
+    primaryColor: "#2563eb",
+    accentColor: "#22c55e",
+    highlightColor: "#f97316",
+    defaultTheme: "dark",
+    customCss: "",
+    logoData: "",
+    adminPassword: "devops@2025"
+  };
+
+  let config = { ...defaultConfig };
+  let charts = [];
+  let isAdminAuthed = false;
+  let currentEditingSectionId = null;
+
+  function registerChart(ch) { if (ch) charts.push(ch); }
+
+  function loadConfig() {
+    try {
+      const raw = localStorage.getItem(CONFIG_KEY);
+      if (raw) config = { ...defaultConfig, ...JSON.parse(raw) };
+    } catch(e) { config = { ...defaultConfig }; }
+  }
+
+  function saveConfig() {
+    try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); } catch(e) {}
+  }
+
+  function applyConfigToDOM() {
+    const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    const setVal = (id, value) => { const el = document.getElementById(id); if (el && "value" in el) el.value = value; };
+
+    setText("companyName", config.companyName);
+    setText("sidebarSubtitle", config.sidebarSubtitle);
+    setText("headerTitle", config.headerTitle);
+    setText("headerSubLabel", config.headerSubLabel);
+    const vt = document.getElementById("versionTag");
+    if (vt) vt.innerHTML = '<i class="fa-solid fa-rocket me-1"></i> ' + config.versionTag;
+
+    const logoEl = document.getElementById("companyLogo");
+    const hLogoEl = document.getElementById("headerLogo");
+    if (logoEl && hLogoEl) {
+      if (config.logoData && config.logoData.startsWith("data:image")) {
+        logoEl.src = config.logoData;
+        hLogoEl.src = config.logoData;
+        logoEl.style.display = "inline-block";
+        hLogoEl.style.display = "inline-block";
+      } else {
+        logoEl.src = ""; hLogoEl.src = "";
+        logoEl.style.display = "none"; hLogoEl.style.display = "none";
+      }
+    }
+
+    document.body.style.fontFamily = config.fontFamily;
+    document.documentElement.style.setProperty("--base-font-size", config.fontSize + "px");
+    document.documentElement.style.setProperty("--base-line-height", config.lineHeight);
+    document.documentElement.style.setProperty("--card-padding", config.cardPadding + "rem");
+    document.documentElement.style.setProperty("--section-margin", config.sectionMargin + "rem");
+    document.documentElement.style.setProperty("--primary-color", config.primaryColor);
+    document.documentElement.style.setProperty("--accent-color", config.accentColor);
+    document.documentElement.style.setProperty("--highlight-color", config.highlightColor);
+
+    if (config.denseTables) document.body.classList.add("tables-dense");
+    else document.body.classList.remove("tables-dense");
+
+    const customCssEl = document.getElementById("customCssInjected");
+    if (customCssEl) customCssEl.textContent = config.customCss || "";
+
+    setVal("adminCompanyName", config.companyName);
+    setVal("adminSidebarSubtitle", config.sidebarSubtitle);
+    setVal("adminHeaderTitle", config.headerTitle);
+    setVal("adminHeaderSubLabel", config.headerSubLabel);
+    setVal("adminVersionTag", config.versionTag);
+    setVal("adminFontFamily", config.fontFamily);
+    setVal("adminFontSize", config.fontSize);
+    setVal("adminLineHeight", config.lineHeight);
+    setVal("adminCardPadding", config.cardPadding);
+    setVal("adminSectionMargin", config.sectionMargin);
+    setVal("adminPrimaryColor", config.primaryColor);
+    setVal("adminAccentColor", config.accentColor);
+    setVal("adminHighlightColor", config.highlightColor);
+    setVal("adminDefaultTheme", config.defaultTheme);
+    setVal("adminCustomCss", config.customCss);
+    setVal("adminPassword", config.adminPassword || defaultConfig.adminPassword);
+
+    const denseChk = document.getElementById("adminDenseTables");
+    if (denseChk) denseChk.checked = config.denseTables;
+
+    const fsVal = document.getElementById("fontSizeValue");
+    const lhVal = document.getElementById("lineHeightValue");
+    const cpVal = document.getElementById("cardPaddingValue");
+    const smVal = document.getElementById("sectionMarginValue");
+    if (fsVal) fsVal.textContent = config.fontSize;
+    if (lhVal) lhVal.textContent = config.lineHeight.toFixed(2);
+    if (cpVal) cpVal.textContent = config.cardPadding.toFixed(1);
+    if (smVal) smVal.textContent = config.sectionMargin.toFixed(1);
+  }
+
+  function initAdminForm() {
+    const bindInput = (id, key) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("input", () => {
+        config[key] = el.value || defaultConfig[key];
+        saveConfig(); applyConfigToDOM();
+      });
+    };
+
+    bindInput("adminCompanyName", "companyName");
+    bindInput("adminSidebarSubtitle", "sidebarSubtitle");
+    bindInput("adminHeaderTitle", "headerTitle");
+    bindInput("adminHeaderSubLabel", "headerSubLabel");
+    bindInput("adminVersionTag", "versionTag");
+    bindInput("adminFontFamily", "fontFamily");
+    bindInput("adminPrimaryColor", "primaryColor");
+    bindInput("adminAccentColor", "accentColor");
+    bindInput("adminHighlightColor", "highlightColor");
+    bindInput("adminCustomCss", "customCss");
+
+    const pwd = document.getElementById("adminPassword");
+    if (pwd) pwd.addEventListener("input", () => {
+      config.adminPassword = pwd.value || defaultConfig.adminPassword;
+      saveConfig();
+    });
+
+    const fs = document.getElementById("adminFontSize");
+    const lh = document.getElementById("adminLineHeight");
+    const cp = document.getElementById("adminCardPadding");
+    const sm = document.getElementById("adminSectionMargin");
+    const dense = document.getElementById("adminDenseTables");
+    const defTheme = document.getElementById("adminDefaultTheme");
+
+    if (fs) fs.addEventListener("input", () => {
+      config.fontSize = Number(fs.value) || defaultConfig.fontSize;
+      saveConfig(); applyConfigToDOM();
+    });
+    if (lh) lh.addEventListener("input", () => {
+      config.lineHeight = Number(lh.value) || defaultConfig.lineHeight;
+      saveConfig(); applyConfigToDOM();
+    });
+    if (cp) cp.addEventListener("input", () => {
+      config.cardPadding = Number(cp.value) || defaultConfig.cardPadding;
+      saveConfig(); applyConfigToDOM();
+    });
+    if (sm) sm.addEventListener("input", () => {
+      config.sectionMargin = Number(sm.value) || defaultConfig.sectionMargin;
+      saveConfig(); applyConfigToDOM();
+    });
+    if (dense) dense.addEventListener("change", () => {
+      config.denseTables = dense.checked;
+      saveConfig(); applyConfigToDOM();
+    });
+    if (defTheme) defTheme.addEventListener("change", () => {
+      config.defaultTheme = defTheme.value || defaultConfig.defaultTheme;
+      saveConfig();
+      localStorage.setItem("devopsUmbrellaTheme", config.defaultTheme);
+      applyTheme(config.defaultTheme);
+    });
+
+    const logoUpload = document.getElementById("adminLogoUpload");
+    if (logoUpload) {
+      logoUpload.addEventListener("change", () => {
+        const file = logoUpload.files && logoUpload.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          config.logoData = reader.result;
+          saveConfig(); applyConfigToDOM();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const resetBtn = document.getElementById("adminResetConfig");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        if (!confirm("Reset all admin settings, layout, approvals and edited content to defaults?")) return;
+        config = { ...defaultConfig };
+        saveConfig();
+        document.querySelectorAll(".editable-section").forEach(sec => {
+          if (sec.id) localStorage.removeItem(SECTION_CONTENT_PREFIX + sec.id);
+        });
+        localStorage.removeItem(SECTION_ORDER_KEY);
+        localStorage.removeItem(DIGITAL_APPROVAL_KEY);
+        isAdminAuthed = false;
+        applyConfigToDOM();
+        applySectionOrder();
+        initEditableSections(true);
+        initDigitalApproval(true);
+        localStorage.setItem("devopsUmbrellaTheme", config.defaultTheme);
+        applyTheme(config.defaultTheme);
+      });
+    }
+
+    const layoutBtn = document.getElementById("openLayoutEditor");
+    if (layoutBtn) layoutBtn.addEventListener("click", openLayoutEditor);
+  }
+
+  // ---- theme ----
+  function applyTheme(theme) {
+    const body = document.body;
+    const btn = document.getElementById("themeToggle");
+    body.classList.remove("dark-theme", "light-theme");
+    body.classList.add(theme + "-theme");
+    if (btn) {
+      btn.innerHTML = theme === "dark"
+        ? '<i class="fa-solid fa-sun me-1"></i> Light'
+        : '<i class="fa-solid fa-moon me-1"></i> Dark';
+    }
+    const isDark = theme === "dark";
+    charts.forEach(chart => {
+      if (!chart.options || !chart.options.scales) return;
+      Object.values(chart.options.scales).forEach(scale => {
+        scale.ticks = scale.ticks || {};
+        scale.grid = scale.grid || {};
+        scale.ticks.color = isDark ? "#e5e7eb" : "#111827";
+        scale.grid.color = isDark ? "rgba(55,65,81,0.5)" : "rgba(209,213,219,0.7)";
+      });
+      chart.update();
+    });
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem("devopsUmbrellaTheme");
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initial = saved || config.defaultTheme || (prefersDark ? "dark" : "light");
+    applyTheme(initial);
+    const btn = document.getElementById("themeToggle");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        const isDark = document.body.classList.contains("dark-theme");
+        const next = isDark ? "light" : "dark";
+        localStorage.setItem("devopsUmbrellaTheme", next);
+        applyTheme(next);
+      });
+    }
+  }
+
+  // ---- editable sections ----
+  function loadSectionContentOverrides() {
+    document.querySelectorAll(".editable-section").forEach(sec => {
+      if (!sec.id) return;
+      const key = SECTION_CONTENT_PREFIX + sec.id;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const content = sec.querySelector(".editable-content");
+        if (content) content.innerHTML = saved;
+      }
+    });
+  }
+
+  function ensureAdminAuth(cb) {
+    if (isAdminAuthed) return cb();
+    const pwd = prompt("Enter admin password to edit:");
+    if (pwd === (config.adminPassword || defaultConfig.adminPassword)) {
+      isAdminAuthed = true;
+      cb();
+    } else if (pwd !== null) {
+      alert("Incorrect password.");
+    }
+  }
+
+  function initEditableSections(skipLoad) {
+    if (!skipLoad) loadSectionContentOverrides();
+    const modalEl = document.getElementById("sectionEditModal");
+    const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+    const editor = document.getElementById("sectionEditEditor");
+    const titleEl = document.getElementById("sectionEditTitle");
+
+    document.querySelectorAll(".editable-section").forEach(sec => {
+      sec.addEventListener("dblclick", e => {
+        if (e.target.closest("a,button,input,textarea,select,label")) return;
+        ensureAdminAuth(() => {
+          const content = sec.querySelector(".editable-content");
+          if (!content || !editor || !modal) return;
+          currentEditingSectionId = sec.id;
+          editor.innerHTML = content.innerHTML.trim();
+          const friendly = sec.getAttribute("data-section-title") || sec.id || "Section";
+          if (titleEl) titleEl.textContent = "Edit Section: " + friendly;
+          modal.show();
+        });
+      });
+    });
+
+    const saveBtn = document.getElementById("sectionEditSaveBtn");
+    if (saveBtn && modal) {
+      saveBtn.onclick = () => {
+        if (!currentEditingSectionId || !editor) return;
+        const sec = document.getElementById(currentEditingSectionId);
+        if (!sec) return;
+        const content = sec.querySelector(".editable-content");
+        if (!content) return;
+        const html = editor.innerHTML;
+        content.innerHTML = html;
+        localStorage.setItem(SECTION_CONTENT_PREFIX + currentEditingSectionId, html);
+        modal.hide();
+      };
+    }
+  }
+
+  // ---- layout & order ----
+  function getCurrentSectionOrder() {
+    const saved = localStorage.getItem(SECTION_ORDER_KEY);
+    if (saved) {
+      try {
+        const arr = JSON.parse(saved);
+        if (Array.isArray(arr)) return arr;
+      } catch(e){}
+    }
+    const ids = [];
+    document.querySelectorAll("main > section").forEach(sec => {
+      if (sec.id && sec.id !== "admin") ids.push(sec.id);
+    });
+    return ids;
+  }
+
+  function applySectionOrder() {
+    const order = getCurrentSectionOrder();
+    const main = document.querySelector("main.main-content");
+    if (!main) return;
+    const map = {};
+    document.querySelectorAll("main > section").forEach(sec => { if (sec.id) map[sec.id] = sec; });
+    order.forEach(id => { const sec = map[id]; if (sec) main.appendChild(sec); });
+    const adminSec = document.getElementById("admin");
+    if (adminSec) main.appendChild(adminSec);
+
+    const nav = document.getElementById("sidebarNav");
+    if (!nav) return;
+    const navItems = Array.from(nav.children);
+    const adminNav = navItems.find(li => {
+      const a = li.querySelector("a"); return a && a.getAttribute("href") === "#admin";
+    });
+    const hrefMap = {};
+    navItems.forEach(li => {
+      const a = li.querySelector("a"); if (!a) return;
+      const href = a.getAttribute("href"); if (!href || !href.startsWith("#")) return;
+      hrefMap[href.slice(1)] = li;
+    });
+    nav.innerHTML = "";
+    order.forEach(id => { const li = hrefMap[id]; if (li) nav.appendChild(li); });
+    if (adminNav) nav.appendChild(adminNav);
+  }
+
+  function openLayoutEditor() {
+    const listEl = document.getElementById("sectionOrderList");
+    if (!listEl) return;
+    listEl.innerHTML = "";
+    const order = getCurrentSectionOrder();
+    order.forEach(id => {
+      const sec = document.getElementById(id);
+      if (!sec) return;
+      const title = sec.getAttribute("data-section-title") || id;
+      const li = document.createElement("li");
+      li.className = "list-group-item d-flex justify-content-between align-items-center";
+      li.setAttribute("draggable", "true");
+      li.dataset.sectionId = id;
+      li.innerHTML = `<span>${title}</span><span class="text-muted"><i class="fa-solid fa-grip-lines"></i></span>`;
+      listEl.appendChild(li);
+    });
+
+    let dragSrc = null;
+    function dragStart(e){ dragSrc=this; e.dataTransfer.effectAllowed="move"; this.classList.add("opacity-50"); }
+    function dragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect="move"; }
+    function drop(e){
+      e.preventDefault();
+      if (!dragSrc || dragSrc===this) return;
+      const list = this.parentNode;
+      const nodes = Array.from(list.children);
+      const from = nodes.indexOf(dragSrc);
+      const to = nodes.indexOf(this);
+      if (from > to) list.insertBefore(dragSrc, this);
+      else list.insertBefore(dragSrc, this.nextSibling);
+    }
+    function dragEnd(){ this.classList.remove("opacity-50"); }
+
+    listEl.querySelectorAll("li").forEach(li => {
+      li.addEventListener("dragstart", dragStart);
+      li.addEventListener("dragover", dragOver);
+      li.addEventListener("drop", drop);
+      li.addEventListener("dragend", dragEnd);
+    });
+
+    const modalEl = document.getElementById("layoutModal");
+    if (!modalEl) return;
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+
+    const saveBtn = document.getElementById("saveLayoutBtn");
+    if (saveBtn) {
+      saveBtn.onclick = () => {
+        const newOrder = [];
+        listEl.querySelectorAll("li").forEach(li => {
+          if (li.dataset.sectionId) newOrder.push(li.dataset.sectionId);
+        });
+        localStorage.setItem(SECTION_ORDER_KEY, JSON.stringify(newOrder));
+        applySectionOrder();
+        initNavActiveSync();
+        modal.hide();
+      };
+    }
+  }
+
+  // ---- KPI chart ----
+  function initCharts() {
+    const ctx = document.getElementById("kpiChartCanvas");
+    if (!ctx) return;
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Deploy Freq", "Lead Time", "Fail Rate", "MTTR", "SLO"],
+        datasets: [
+          { label:"Current", data:[18,4,7,70,94], borderWidth:1 },
+          { label:"Target", data:[24,2,5,60,99], borderWidth:1 }
+        ]
+      },
+      options: {
+        responsive:true,
+        scales:{ y:{ beginAtZero:true } }
+      }
+    });
+    registerChart(chart);
+  }
+
+  // ---- digital approval ----
+  const approvalStakeholders = [
+    { key:"prepared", name:"Adel Alfeky", role:"Chief Enterprise Architect (Prepared By)" },
+    { key:"review_sd", name:"Khaled Ahmad Abdullah", role:"Solutions Delivery Director (Reviewed By)" },
+    { key:"review_bo", name:"Abdulmohsen Almutairi", role:"Business Operation Director (Reviewed By)" },
+    { key:"review_infra", name:"Faisal Alhaiti", role:"Infrastructure Operation Director (Reviewed By)" },
+    { key:"review_dtgm", name:"Nasser AlYousef", role:"D&T General Manager (Reviewed By)" },
+    { key:"endorse_grc", name:"TIC-GRC", role:"Governance, Risk & Compliance (Endorsed By)" },
+    { key:"approve_board1", name:"Ahmad Al-solaim", role:"Member of the Board (Approved By)" },
+    { key:"approve_board2", name:"Abdulrahman Al-sughayer", role:"Member of the Board (Approved By)" },
+    { key:"approve_chair", name:"Nabil Al-Omar", role:"Chairman of the Board (Approved By)" }
+  ];
+
+  function loadApprovalState() {
+    try {
+      const raw = localStorage.getItem(DIGITAL_APPROVAL_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveApprovalState(state) {
+    try { localStorage.setItem(DIGITAL_APPROVAL_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function initDigitalApproval(reset) {
+    const body = document.getElementById("digitalApprovalBody");
+    if (!body) return;
+    let state = reset ? {} : loadApprovalState();
+    body.innerHTML = "";
+    approvalStakeholders.forEach(stake => {
+      const status = state[stake.key];
+      const tr = document.createElement("tr");
+      const statusText = status ? "Approved on " + status.date : "Pending";
+      const statusClass = status ? "text-success" : "text-warning";
+      tr.innerHTML = `
+        <td>${stake.name}</td>
+        <td>${stake.role}</td>
+        <td class="${statusClass}" data-status-cell="${stake.key}">${statusText}</td>
+        <td>
+          <button class="btn btn-sm ${status ? "btn-outline-danger" : "btn-outline-success"}"
+                  data-approve-btn="${stake.key}">
+            ${status ? "Revoke" : "Approve"}
+          </button>
+        </td>`;
+      body.appendChild(tr);
+    });
+
+    body.querySelectorAll("button[data-approve-btn]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-approve-btn");
+        state = loadApprovalState();
+        const cell = body.querySelector(`td[data-status-cell="${key}"]`);
+        const existing = state[key];
+        if (!existing) {
+          const now = new Date();
+          const dateStr = now.toLocaleString();
+          state[key] = { date: dateStr };
+          if (cell) { cell.textContent = "Approved on " + dateStr; cell.classList.remove("text-warning"); cell.classList.add("text-success"); }
+          btn.textContent = "Revoke";
+          btn.classList.remove("btn-outline-success");
+          btn.classList.add("btn-outline-danger");
+        } else {
+          delete state[key];
+          if (cell) { cell.textContent = "Pending"; cell.classList.remove("text-success"); cell.classList.add("text-warning"); }
+          btn.textContent = "Approve";
+          btn.classList.remove("btn-outline-danger");
+          btn.classList.add("btn-outline-success");
+        }
+        saveApprovalState(state);
+      });
+    });
+  }
+
+  // ---- nav active on scroll ----
+  function initNavActiveSync() {
+    const navLinks = document.querySelectorAll("#sidebarNav a.nav-link");
+    navLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+      });
+    });
+
+    const sections = Array.from(document.querySelectorAll("main > section")).filter(sec => sec.id && sec.id !== "admin");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          navLinks.forEach(link => {
+            if (link.getAttribute("href") === "#" + id) {
+              navLinks.forEach(l => l.classList.remove("active"));
+              link.classList.add("active");
+            }
+          });
+        });
+      }, { threshold:0.4 });
+      sections.forEach(sec => observer.observe(sec));
+    }
+  }
+
+  // ---- mobile menu ----
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show");
+      });
+    }
+  });
+
+  // ---- main init ----
+  document.addEventListener("DOMContentLoaded", () => {
+    loadConfig();
+    applyConfigToDOM();
+    applySectionOrder();
+    initAdminForm();
+    initEditableSections(false);
+    initCharts();
+    initTheme();
+    initNavActiveSync();
+    initDigitalApproval(false);
+  });
+</script>
+</body>
+</html>
